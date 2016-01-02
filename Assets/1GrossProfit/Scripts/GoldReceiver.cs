@@ -11,7 +11,7 @@ public class GoldReceiver : MonoBehaviour {
     public float TimeSinceNoGold;
     [Range(0, 100)]
     public float TimeToGoldThought = 10;
-    GameObject goldThought;
+    new Animation animation;
 
     [Range(0, 1)]
     public float GoldAmount;
@@ -19,6 +19,7 @@ public class GoldReceiver : MonoBehaviour {
     public float GoldConsumedPerMinute;
 
     void Start() {
+        animation = GetComponent<Animation>();
         // initialize gold
         {
             gold = Instantiate(GoldPrefab);
@@ -29,7 +30,6 @@ public class GoldReceiver : MonoBehaviour {
         }
         // initialize gold thought bubble
         {
-            goldThought = transform.FindChild("GoldThought").gameObject;
             TimeSinceNoGold = Random.value * TimeToGoldThought * 0.8f; // stagger the initial thought bubbles
         }
     }
@@ -59,7 +59,13 @@ public class GoldReceiver : MonoBehaviour {
         }
         // show gold thought bubble based on how much time has passed since no gold
         {
-            goldThought.SetActive(TimeSinceNoGold > TimeToGoldThought);
+            if (TimeSinceNoGold > TimeToGoldThought) {
+                animation.Play();
+            } else {
+                animation["GoldDeprived"].enabled = true;
+                animation.Sample();
+                animation.Stop();
+            }
         }
     }
 
