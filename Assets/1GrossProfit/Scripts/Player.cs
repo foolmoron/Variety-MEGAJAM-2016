@@ -8,7 +8,15 @@ public class Player : MonoBehaviour {
     [Range(0, 1)]
     public float Encumbrance;
 
-    public void Update() {
+    SpriteRenderer mainSprite;
+    public Sprite RegularSprite;
+    public Sprite WaterSprite;
+
+    void Start() {
+        mainSprite = transform.FindChild("Sprite").GetComponent<SpriteRenderer>();
+    }
+
+    void Update() {
         var input = Vector2.zero;
         // get input 
         {
@@ -37,6 +45,22 @@ public class Player : MonoBehaviour {
         {
             var movement = Speed * (1 - Encumbrance) * Time.deltaTime * input;
             transform.position += movement.to3();
+        }
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision) {
+        var water = collision.GetComponent<Water>();
+        if (water) {
+            mainSprite.sprite = WaterSprite;
+            Encumbrance = water.Encumbrance;
+        }
+    }
+
+    public void OnTriggerExit2D(Collider2D collision) {
+        var water = collision.GetComponent<Water>();
+        if (water) {
+            mainSprite.sprite = RegularSprite;
+            Encumbrance = 0;
         }
     }
 }
