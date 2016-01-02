@@ -8,6 +8,10 @@ public class Player : MonoBehaviour {
     [Range(0, 1)]
     public float Encumbrance;
 
+    public AnimationCurve MoveBobbing;
+    public float MoveAnimationScale;
+    float animationPosition;
+
     SpriteRenderer mainSprite;
     public Sprite RegularSprite;
     public Sprite WaterSprite;
@@ -42,9 +46,19 @@ public class Player : MonoBehaviour {
             }
         }
         // move based on input
+        var movement = Vector2.zero;
         {
-            var movement = Speed * (1 - Encumbrance) * Time.deltaTime * input;
+            movement = Speed * (1 - Encumbrance) * Time.deltaTime * input;
             transform.position += movement.to3();
+        }
+        // animate based on movement
+        {
+            if (movement != Vector2.zero) {
+                animationPosition += movement.magnitude * MoveAnimationScale;
+                mainSprite.transform.localRotation = Quaternion.Euler(0, 0, MoveBobbing.Evaluate(animationPosition) * 360f);
+            } else {
+                mainSprite.transform.localRotation = Quaternion.identity;
+            }
         }
     }
 
