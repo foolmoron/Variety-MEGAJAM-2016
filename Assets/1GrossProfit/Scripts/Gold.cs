@@ -9,6 +9,8 @@ public class Gold : MonoBehaviour {
     int originalGold;
     Vector3 originalScale;
 
+    public AudioClip GoldGiveSound;
+
     void Start() {
         originalGold = GoldLeft;
         originalScale = transform.localScale;
@@ -31,6 +33,7 @@ public class Gold : MonoBehaviour {
                 Destroy(gameObject);
             }
             goldReceiver.OnReceiveGold();
+            AudioSource.PlayClipAtPoint(GoldGiveSound, Vector3.zero);
         }
     }
 }

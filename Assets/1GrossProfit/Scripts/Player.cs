@@ -26,6 +26,13 @@ public class Player : MonoBehaviour {
     public Sprite RegularSprite;
     public Sprite WaterSprite;
 
+    public float RotationSoundTrigger = 0.35f;
+    bool soundTriggered = false;
+    public AudioClip RegularStep;
+    public AudioClip WaterStep;
+
+    public AudioClip GoldSound;
+
     void Start() {
         mainSprite = transform.FindChild("Sprite").GetComponent<SpriteRenderer>();
         water = FindObjectOfType<Water>();
@@ -84,12 +91,23 @@ public class Player : MonoBehaviour {
                 mainSprite.transform.localRotation = Quaternion.identity;
             }
         }
+        // trigger sound based on animation
+        {
+            var angle = Mathf.Min(Mathf.Abs(mainSprite.transform.localRotation.eulerAngles.z), Mathf.Abs(mainSprite.transform.localRotation.eulerAngles.z - 360));
+            if (!soundTriggered && angle >= RotationSoundTrigger) {
+                soundTriggered = true;
+                AudioSource.PlayClipAtPoint(InWater ? WaterStep : RegularStep, Vector3.zero);
+            } else if (angle < RotationSoundTrigger) {
+                soundTriggered = false;
+            }
+        }
     }
 
     public void OnTriggerEnter2D(Collider2D collision) {
         var water = collision.GetComponent<Water>();
         if (water) {
             InWater = true;
+            AudioSource.PlayClipAtPoint(WaterStep, Vector3.zero);
         }
         var goldSource = collision.GetComponent<GoldSource>();
         if (goldSource) {
@@ -101,6 +119,7 @@ public class Player : MonoBehaviour {
             } else {
                 CurrentGold.ResetGoldLeft();
             }
+            AudioSource.PlayClipAtPoint(GoldSound, Vector3.zero);
         }
     }
 
@@ -108,6 +127,7 @@ public class Player : MonoBehaviour {
         var water = collision.GetComponent<Water>();
         if (water) {
             InWater = false;
+            AudioSource.PlayClipAtPoint(RegularStep, Vector3.zero);
         }
     }
 }
