@@ -7,6 +7,10 @@ public class Player : MonoBehaviour {
     public float Speed = 4;
     [Range(0, 1)]
     public float Encumbrance;
+    [Range(0, 1)]
+    public float GoldEncumbrance = 0.66f;
+
+    public Vector2 Bounds;
 
     public Vector3 GoldOffset = new Vector3(0, 0.44f, 0);
     public Gold CurrentGold;
@@ -51,8 +55,11 @@ public class Player : MonoBehaviour {
         // move based on input
         Vector2 movement;
         {
-            movement = Speed * (1 - Encumbrance) * Time.deltaTime * input;
-            transform.position += movement.to3();
+            movement = Speed * (1 - Encumbrance) * (CurrentGold ? GoldEncumbrance : 1f) * Time.deltaTime * input;
+            var newPos = transform.position + movement.to3();
+            newPos.x = Mathf.Clamp(newPos.x, -Bounds.x / 2, Bounds.x / 2);
+            newPos.y = Mathf.Clamp(newPos.y, -Bounds.y / 2, Bounds.y / 2);
+            transform.position = newPos;
         }
         // animate based on movement
         {
