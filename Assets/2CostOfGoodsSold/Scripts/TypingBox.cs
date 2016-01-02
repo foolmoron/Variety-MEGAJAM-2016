@@ -16,7 +16,10 @@ public class TypingBox : MonoBehaviour {
     public float UnderscoreStepX;
     float underscoreInitialX;
     TextMesh underscore;
-    
+
+    public GameObject PopupTextPrefab;
+    public Vector3 PopupTextOffset;
+
     void Start() {
         moneyInput = transform.FindChild("Input").GetComponent<TextMesh>();
         moneyInput.text = "";
@@ -24,7 +27,16 @@ public class TypingBox : MonoBehaviour {
         underscore = transform.FindChild("_").GetComponent<TextMesh>();
         underscoreInitialX = underscore.transform.position.x;
     }
-    
+
+    public void EnterNumber(string numberText) {
+        var popupText = (GameObject) Instantiate(PopupTextPrefab, transform.position + PopupTextOffset, Quaternion.identity);
+        var firstNumber = string.IsNullOrEmpty(numberText) ? 0 : float.Parse(numberText);
+        var currencyFormatted = firstNumber.ToString("C");
+        var finalNumber = float.Parse(currencyFormatted.Substring(1));
+        popupText.GetComponent<TextMesh>().text = currencyFormatted;
+        Debug.Log(finalNumber);
+    }
+
     void Update() {
         // process inputs
         {
@@ -41,6 +53,7 @@ public class TypingBox : MonoBehaviour {
                             break;
                         case KeyCode.Return:
                         case KeyCode.KeypadEnter:
+                            EnterNumber(text);
                             text = "";
                             break;
                     }
@@ -89,7 +102,9 @@ public class TypingBox : MonoBehaviour {
                                 break;
                             case KeyCode.Period:
                             case KeyCode.KeypadPeriod:
-                                text += '.';
+                                if (!text.Contains(".")) {
+                                    text += '.';
+                                }
                                 break;
                         }
                     }
