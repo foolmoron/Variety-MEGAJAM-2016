@@ -9,7 +9,7 @@ public class Player : MonoBehaviour {
     public float Encumbrance;
 
     public Vector3 GoldOffset = new Vector3(0, 0.44f, 0);
-    public GameObject CurrentGold;
+    public Gold CurrentGold;
 
     public AnimationCurve MoveBobbing;
     public float MoveAnimationScale;
@@ -49,7 +49,7 @@ public class Player : MonoBehaviour {
             }
         }
         // move based on input
-        var movement = Vector2.zero;
+        Vector2 movement;
         {
             movement = Speed * (1 - Encumbrance) * Time.deltaTime * input;
             transform.position += movement.to3();
@@ -72,11 +72,15 @@ public class Player : MonoBehaviour {
             Encumbrance = water.Encumbrance;
         }
         var goldSource = collision.GetComponent<GoldSource>();
-        if (goldSource && !CurrentGold) {
-            CurrentGold = Instantiate(goldSource.GoldPrefab);
-            CurrentGold.transform.parent = transform;
-            CurrentGold.transform.localPosition = GoldOffset;
-            CurrentGold.transform.localRotation = Quaternion.identity;
+        if (goldSource) {
+            if (!CurrentGold) {
+                CurrentGold = Instantiate(goldSource.GoldPrefab).GetComponent<Gold>();
+                CurrentGold.transform.parent = transform;
+                CurrentGold.transform.localPosition = GoldOffset;
+                CurrentGold.transform.localRotation = Quaternion.identity;
+            } else {
+                CurrentGold.ResetGoldLeft();
+            }
         }
     }
 
