@@ -8,6 +8,9 @@ public class Player : MonoBehaviour {
     [Range(0, 1)]
     public float Encumbrance;
 
+    public Vector3 GoldOffset = new Vector3(0, 0.44f, 0);
+    public GameObject CurrentGold;
+
     public AnimationCurve MoveBobbing;
     public float MoveAnimationScale;
     float animationPosition;
@@ -67,6 +70,13 @@ public class Player : MonoBehaviour {
         if (water) {
             mainSprite.sprite = WaterSprite;
             Encumbrance = water.Encumbrance;
+        }
+        var goldSource = collision.GetComponent<GoldSource>();
+        if (goldSource && !CurrentGold) {
+            CurrentGold = Instantiate(goldSource.GoldPrefab);
+            CurrentGold.transform.parent = transform;
+            CurrentGold.transform.localPosition = GoldOffset;
+            CurrentGold.transform.localRotation = Quaternion.identity;
         }
     }
 
