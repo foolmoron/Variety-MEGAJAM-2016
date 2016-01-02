@@ -13,6 +13,11 @@ public class GoldReceiver : MonoBehaviour {
     public float TimeToGoldThought = 10;
     new Animation animation;
 
+    public float JumpAmount = 0.2f;
+    public float JumpSpeed = 3f;
+    Vector3 originalPosition;
+    bool jumpingUp = true;
+
     [Range(0, 1)]
     public float GoldAmount;
     [Range(0, 10)]
@@ -20,6 +25,7 @@ public class GoldReceiver : MonoBehaviour {
 
     void Start() {
         animation = GetComponent<Animation>();
+        originalPosition = transform.position;
         // initialize gold
         {
             gold = Instantiate(GoldPrefab);
@@ -65,6 +71,22 @@ public class GoldReceiver : MonoBehaviour {
                 animation["GoldDeprived"].enabled = true;
                 animation.Sample();
                 animation.Stop();
+            }
+        }
+        // jump when happy
+        {
+            var jumpAmount = JumpAmount * (1 - Mathf.Clamp01(TimeSinceNoGold / (TimeToGoldThought * 0.9f)));
+            var jumpSpeed = JumpSpeed * (1 - Mathf.Clamp01(TimeSinceNoGold / (TimeToGoldThought * 0.9f)));
+            if (jumpingUp) {
+                transform.position = Vector3.MoveTowards(transform.position, originalPosition + new Vector3(0, jumpAmount), jumpSpeed * Time.deltaTime);
+                if (transform.position == (originalPosition + new Vector3(0, jumpAmount))) {
+                    jumpingUp = false;
+                }
+            } else {
+                transform.position = Vector3.MoveTowards(transform.position, originalPosition, jumpSpeed * Time.deltaTime);
+                if (transform.position == originalPosition) {
+                    jumpingUp = true;
+                }
             }
         }
     }
