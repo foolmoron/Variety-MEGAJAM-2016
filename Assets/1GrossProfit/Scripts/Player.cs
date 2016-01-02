@@ -15,6 +15,9 @@ public class Player : MonoBehaviour {
     public Vector3 GoldOffset = new Vector3(0, 0.44f, 0);
     public Gold CurrentGold;
 
+    Water water;
+    public bool InWater;
+
     public AnimationCurve MoveBobbing;
     public float MoveAnimationScale;
     float animationPosition;
@@ -25,9 +28,20 @@ public class Player : MonoBehaviour {
 
     void Start() {
         mainSprite = transform.FindChild("Sprite").GetComponent<SpriteRenderer>();
+        water = FindObjectOfType<Water>();
     }
 
     void Update() {
+        // encumbrance/sprite based on water
+        {
+            if (InWater) {
+                Encumbrance = water.Dirtiness;
+                mainSprite.sprite = WaterSprite;
+            } else {
+                Encumbrance = 0;
+                mainSprite.sprite = RegularSprite;
+            }
+        }
         var input = Vector2.zero;
         // get input 
         {
@@ -75,8 +89,7 @@ public class Player : MonoBehaviour {
     public void OnTriggerEnter2D(Collider2D collision) {
         var water = collision.GetComponent<Water>();
         if (water) {
-            mainSprite.sprite = WaterSprite;
-            Encumbrance = water.Encumbrance;
+            InWater = true;
         }
         var goldSource = collision.GetComponent<GoldSource>();
         if (goldSource) {
@@ -94,8 +107,7 @@ public class Player : MonoBehaviour {
     public void OnTriggerExit2D(Collider2D collision) {
         var water = collision.GetComponent<Water>();
         if (water) {
-            mainSprite.sprite = RegularSprite;
-            Encumbrance = 0;
+            InWater = false;
         }
     }
 }
