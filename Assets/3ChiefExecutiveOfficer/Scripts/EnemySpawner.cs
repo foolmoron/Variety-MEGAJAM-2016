@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class EnemySpawner : MonoBehaviour {
 
+    public bool IsStarted;
+    public GameObject StartMessage;
+
     [Range(0, 10)]
     public float SpawnInterval = 4f;
     [Range(-1, 1)]
@@ -19,12 +22,6 @@ public class EnemySpawner : MonoBehaviour {
     [Range(0, 100)]
     public int InitialSpawn = 10;
 
-    void Start() {
-        for (int i = 0; i < InitialSpawn; i++) {
-            Spawn();
-        }
-    }
-
     public void Spawn() {
         var enemy = Instantiate(SpawnPrefab).GetComponent<Enemy>();
         enemy.Target = Target;
@@ -36,6 +33,26 @@ public class EnemySpawner : MonoBehaviour {
     }
 
     void Update() {
+        // show message when waiting to start
+        {
+            StartMessage.SetActive(!IsStarted);
+        }
+        // wait until input to start
+        {
+            if (!IsStarted) {
+                foreach (var key in new KeyCode[] {KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.I, KeyCode.J, KeyCode.K, KeyCode.L}) {
+                    if (Input.GetKeyDown(key)) {
+                        IsStarted = true;
+                        for (int i = 0; i < InitialSpawn; i++) {
+                            Spawn();
+                        }
+                        break;
+                    }
+                }
+                return;
+            }
+        }
+
         // spawn interval velocity
         {
             SpawnInterval += SpawnIntervalVelocity * Time.deltaTime;
