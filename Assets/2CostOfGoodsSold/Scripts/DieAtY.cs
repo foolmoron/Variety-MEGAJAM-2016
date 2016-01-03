@@ -7,6 +7,8 @@ public class DieAtY : MonoBehaviour {
     public GameObject DiePrefab;
     public Vector3 DiePrefabOffset;
 
+    public AudioClip BadSound;
+
     QuestionDropper questionDropper;
 
     void Start() {
@@ -21,6 +23,7 @@ public class DieAtY : MonoBehaviour {
             Destroy(gameObject);
             questionDropper.Money -= question.GetSolution();
             questionDropper.QuestionsWrong++;
+            AudioSource.PlayClipAtPoint(BadSound, Vector3.zero);
         }
     }
 }

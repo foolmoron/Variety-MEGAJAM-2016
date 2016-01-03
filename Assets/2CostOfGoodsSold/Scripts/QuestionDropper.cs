@@ -36,6 +36,8 @@ public class QuestionDropper : MonoBehaviour {
 
     public bool IsGameOver;
 
+    public AudioClip GameOverSound;
+
     void Start() {
         bar = GetComponentInChildren<SpriteRenderer>();
         moneyText = GetComponentInChildren<TextMesh>();
@@ -103,7 +105,8 @@ public class QuestionDropper : MonoBehaviour {
                 }
                 CurrentQuestions.Clear();
                 scoreText.text = "You got " + QuestionsRight + " questions right!\nYou got " + QuestionsWrong + " questions wrong :(";
-
+                
+                AudioSource.PlayClipAtPoint(GameOverSound, Vector3.zero);
                 OnGameOver();
             }
         }

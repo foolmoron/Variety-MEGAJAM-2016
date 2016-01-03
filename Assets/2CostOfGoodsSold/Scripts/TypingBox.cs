@@ -29,6 +29,9 @@ public class TypingBox : MonoBehaviour {
     public Color MainColor;
     public Color LoanColor;
 
+    public AudioClip TypeSound;
+    public AudioClip CorrectSound;
+
     void Start() {
         allTexts = GetComponentsInChildren<TextMesh>();
 
@@ -69,6 +72,7 @@ public class TypingBox : MonoBehaviour {
                     i--;
                     questionDropper.Money += finalNumber;
                     questionDropper.QuestionsRight++;
+                    AudioSource.PlayClipAtPoint(CorrectSound, Vector3.zero);
                 }
             }
         }
@@ -93,6 +97,7 @@ public class TypingBox : MonoBehaviour {
                             case KeyCode.Delete:
                                 if (text.Length > 0) {
                                     text = text.Substring(0, text.Length - 1);
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                 }
                                 break;
                             case KeyCode.Return:
@@ -102,10 +107,12 @@ public class TypingBox : MonoBehaviour {
                                         questionDropper.Reset(GetNumber(text));
                                         text = "";
                                         IsLoan = false;
+                                        AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     }
                                 } else {
                                     EnterNumber(text);
                                     text = "";
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                 }
                                 break;
                         }
@@ -115,47 +122,58 @@ public class TypingBox : MonoBehaviour {
                                 case KeyCode.Alpha0:
                                 case KeyCode.Keypad0:
                                     text += 0;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Alpha1:
                                 case KeyCode.Keypad1:
                                     text += 1;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Alpha2:
                                 case KeyCode.Keypad2:
                                     text += 2;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Alpha3:
                                 case KeyCode.Keypad3:
                                     text += 3;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Alpha4:
                                 case KeyCode.Keypad4:
                                     text += 4;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Alpha5:
                                 case KeyCode.Keypad5:
                                     text += 5;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Alpha6:
                                 case KeyCode.Keypad6:
                                     text += 6;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Alpha7:
                                 case KeyCode.Keypad7:
                                     text += 7;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Alpha8:
                                 case KeyCode.Keypad8:
                                     text += 8;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Alpha9:
                                 case KeyCode.Keypad9:
                                     text += 9;
+                                    AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     break;
                                 case KeyCode.Period:
                                 case KeyCode.KeypadPeriod:
                                     if (!text.Contains(".")) {
                                         text += '.';
+                                        AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                                     }
                                     break;
                             }
