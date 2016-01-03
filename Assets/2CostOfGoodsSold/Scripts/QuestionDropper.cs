@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 public class QuestionDropper : MonoBehaviour {
+
+    public event Action OnGameOver = delegate { };
 
     [Range(0, 10)]
     public float SecondsPerQuestion = 2f;
@@ -16,25 +20,42 @@ public class QuestionDropper : MonoBehaviour {
 
     [Range(0, 2000)]
     public float Money = 1000;
+    float lastMoney;
     [Range(0, 2000)]
     public float MaxMoney = 2000;
     [Range(0, 20)]
     public float MaxMoneyScale = 12;
 
+    public int QuestionsRight;
+    public int QuestionsWrong;
+
     SpriteRenderer bar;
     TextMesh moneyText;
+    GameObject gameOver;
+    TextMesh scoreText;
 
     public bool IsGameOver;
 
     void Start() {
         bar = GetComponentInChildren<SpriteRenderer>();
         moneyText = GetComponentInChildren<TextMesh>();
+        gameOver = transform.FindChild("GameOver").gameObject;
+        scoreText = gameOver.transform.FindChild("ScoreText").GetComponent<TextMesh>();
         // get random dropping area from the box collider's bounds
         {
             var boxCollider = GetComponent<BoxCollider2D>();
             randomDroppingArea = new Rect(boxCollider.offset - boxCollider.size/2, boxCollider.size);
         }
+        Reset();
+    }
+
+    public void Reset(float money = 1000) {
+        Money = money;
+        MaxMoney = money * 1.25f;
+        IsGameOver = false;
         timeSinceLastQuestion = SecondsPerQuestion;
+        QuestionsRight = 0;
+        QuestionsWrong = 0;
     }
     
     void Update() {
@@ -60,10 +81,13 @@ public class QuestionDropper : MonoBehaviour {
                 }
             }
         }
+        // money can't be negative
+        {
+            Money = Money < 0 ? 0 : Money;
+        }
         // size bar based on money
         {
             var moneyRatio = Money / MaxMoney;
-            moneyRatio = moneyRatio < 0 ? 0 : moneyRatio;
             bar.transform.localScale = bar.transform.localScale.withX(moneyRatio * MaxMoneyScale);
         }
         // update text based on money
@@ -72,12 +96,21 @@ public class QuestionDropper : MonoBehaviour {
         }
         // game over if money is 0
         {
-            if (Money <= 0) {
+            if (lastMoney > 0 && Money <= 0) {
+                IsGameOver = true;
                 for (int i = 0; i < CurrentQuestions.Count; i++) {
                     Destroy(CurrentQuestions[i].gameObject);
                 }
                 CurrentQuestions.Clear();
+                scoreText.text = "You got " + QuestionsRight + " questions right!\nYou got " + QuestionsWrong + " questions wrong :(";
+
+                OnGameOver();
             }
         }
+        // show game over if necessary
+        {
+            gameOver.SetActive(IsGameOver);
+        }
+        lastMoney = Money;
     }
 }

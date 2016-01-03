@@ -20,6 +20,7 @@ public class DieAtY : MonoBehaviour {
             text.text = "-$" + question.WholePart + "." + question.DecimalTensPart + "0";
             Destroy(gameObject);
             questionDropper.Money -= question.GetSolution();
+            questionDropper.QuestionsWrong++;
         }
     }
 }
