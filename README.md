@@ -7,4 +7,10 @@ Playable for free in the browser here: http://foolmoron.itch.io/variety-megajam-
 Theme: GP - Gross Profit  
 Genre: Serious Game  
 Timelapse: https://youtu.be/oZUg_iDiG6E  
-An idea of where greed comes from and how it is perceived.  
+An idea of where greed comes from and how it is perceived.
+
+## Game #2  
+Theme: COGS - Cost Of Goods Sold  
+Genre: Arcade Educational  
+Timelapse: https://youtu.be/sPvKLdru-mU​  
+Play as an accountant tallying up sales by evaluating the math problems!
