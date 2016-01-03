@@ -20,7 +20,11 @@ public class TypingBox : MonoBehaviour {
     public GameObject PopupTextPrefab;
     public Vector3 PopupTextOffset;
 
+    QuestionDropper questionDropper;
+
     void Start() {
+        questionDropper = FindObjectOfType<QuestionDropper>();
+
         moneyInput = transform.FindChild("Input").GetComponent<TextMesh>();
         moneyInput.text = "";
 
@@ -29,12 +33,19 @@ public class TypingBox : MonoBehaviour {
     }
 
     public void EnterNumber(string numberText) {
-        var popupText = (GameObject) Instantiate(PopupTextPrefab, transform.position + PopupTextOffset, Quaternion.identity);
-        var firstNumber = string.IsNullOrEmpty(numberText) ? 0 : float.Parse(numberText);
-        var currencyFormatted = firstNumber.ToString("C");
-        var finalNumber = float.Parse(currencyFormatted.Substring(1));
-        popupText.GetComponent<TextMesh>().text = currencyFormatted;
-        Debug.Log(finalNumber);
+        var finalNumber = 0f;
+        // popup text
+        {
+            var popupText = (GameObject)Instantiate(PopupTextPrefab, transform.position + PopupTextOffset, Quaternion.identity);
+            var firstNumber = string.IsNullOrEmpty(numberText) ? 0 : float.Parse(numberText);
+            var currencyFormatted = firstNumber.ToString("C");
+            finalNumber = float.Parse(currencyFormatted.Substring(1));
+            popupText.GetComponent<TextMesh>().text = currencyFormatted;
+        }
+        // send solution to question dropper
+        {
+            questionDropper.TrySolution(finalNumber);
+        }
     }
 
     void Update() {
