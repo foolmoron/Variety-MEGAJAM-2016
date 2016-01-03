@@ -13,6 +13,8 @@ public class Enemy : MonoBehaviour {
     [Range(0, 1)]
     public float BloodDistance = 0.1f;
 
+    public AudioClip DieSound;
+
     void Start() {
         GetComponent<SpriteRenderer>().color = new HSBColor(Random.value, 0.5f, 1f).ToColor();
     }
@@ -34,6 +36,8 @@ public class Enemy : MonoBehaviour {
         if (bullet) {
             Destroy(bullet.gameObject);
             Destroy(gameObject);
+
+            AudioSource.PlayClipAtPoint(DieSound, Vector3.zero);
 
             // bloods
             for (int i = 0; i < BloodsToSpawn; i++) {

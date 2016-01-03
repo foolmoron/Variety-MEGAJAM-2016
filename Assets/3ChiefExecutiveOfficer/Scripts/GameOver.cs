@@ -33,6 +33,8 @@ public class GameOver : MonoBehaviour {
     TextMesh cleanText;
     TextMesh timeText;
 
+    public AudioClip GameOverSound;
+
     void Start() {
         stuff = transform.FindChild("Stuff").gameObject;
         shaker = GetComponentInChildren<Shaker>();
@@ -52,6 +54,8 @@ public class GameOver : MonoBehaviour {
         for (int i = 0; i < enemies.Length; i++) {
             Destroy(enemies[i].gameObject);
         }
+
+        AudioSource.PlayClipAtPoint(GameOverSound, Vector3.zero);
 
         // calculate score
         {

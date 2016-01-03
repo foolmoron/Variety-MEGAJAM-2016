@@ -11,9 +11,11 @@ public class TwinStick : MonoBehaviour {
     public float ShootInterval = 0.5f;
     float shootTime;
     public GameObject BulletPrefab;
+
+    AudioSource shootSound;
     
     void Start() {
-    
+        shootSound = GetComponent<AudioSource>();
     }
     
     void Update() {
@@ -39,6 +41,8 @@ public class TwinStick : MonoBehaviour {
                 var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 var bullet = (GameObject)Instantiate(BulletPrefab, transform.position.plusZ(-0.1f), Quaternion.Euler(0, 0, angle));
                 shootTime = 0;
+                shootSound.pitch = Random.Range(0.9f, 1.1f);
+                shootSound.Play();
             }
         }
     }
