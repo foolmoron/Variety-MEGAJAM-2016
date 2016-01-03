@@ -14,3 +14,9 @@ Theme: COGS - Cost Of Goods Sold
 Genre: Arcade Educational  
 Timelapse: https://youtu.be/sPvKLdru-mU​  
 Play as an accountant tallying up sales by evaluating the math problems!
+
+## Game #3
+Theme: CEO - Chief Executive Officer  
+Genre: Twinstick Shooter  
+Timelapse: https://youtu.be/ihsd-7nVWgI  
+Robotron except you play as a suit.  
