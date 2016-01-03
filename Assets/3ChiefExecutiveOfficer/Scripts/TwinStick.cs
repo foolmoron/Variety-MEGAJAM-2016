@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class TwinStick : MonoBehaviour {
 
+    public Vector2 Bounds;
+
     [Range(0, 10)]
     public float Speed = 2;
 
@@ -26,7 +28,10 @@ public class TwinStick : MonoBehaviour {
             if (Input.GetKey(KeyCode.S)) direction.y = -1;
             if (Input.GetKey(KeyCode.D)) direction.x = 1;
             if (Input.GetKey(KeyCode.A)) direction.x = -1;
-            transform.position += direction.normalized.to3() * Speed * Time.deltaTime;
+            var newPos = transform.position + direction.normalized.to3() * Speed * Time.deltaTime;
+            newPos.x = Mathf.Clamp(newPos.x, -Bounds.x / 2, Bounds.x / 2);
+            newPos.y = Mathf.Clamp(newPos.y, -Bounds.y / 2, Bounds.y / 2);
+            transform.position = newPos;
         }
         // shoot based on IJKL
         {
