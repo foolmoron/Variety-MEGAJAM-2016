@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Question : MonoBehaviour {
 
-    [Range(0, 200)]
+    [Range(0, 80)]
     public int WholePart;
     [Range(0, 9)]
     public int DecimalTensPart;
@@ -19,10 +19,7 @@ public class Question : MonoBehaviour {
     [Range(0, 10)]
     public float MaxFallingSpeed = 3;
 
-    public float solution;
-    public float complexity;
-
-    new TextMesh text;
+    TextMesh text;
 
     Rotating rotating;
     Moving moving;
@@ -39,14 +36,17 @@ public class Question : MonoBehaviour {
     public void Randomize() {
         // generate random parts
         {
-            WholePart = Random.Range(0, 200);
+            WholePart = Random.Range(0, 80);
             DecimalTensPart = Random.Range(0, 9);
             Multiplier = Random.Range(1, 5);
-            solution = GetSolution();
+        }
+        // random color
+        {
+            text.color = new HSBColor(Random.value, 1, 0.36f).ToColor();
         }
         // falling speed based on part complexity (i.e. "difficulty")
         {
-            complexity = WholePart * DecimalTensPart * Multiplier;
+            var complexity = WholePart * DecimalTensPart * Multiplier;
             var difficulty = complexity / 2500;
             moving.MovementPerSecond.y = -Mathf.Lerp(MaxFallingSpeed, MinFallingSpeed, difficulty);
         }
