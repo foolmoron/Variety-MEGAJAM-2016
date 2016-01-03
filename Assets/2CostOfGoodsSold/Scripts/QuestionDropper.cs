@@ -12,29 +12,35 @@ public class QuestionDropper : MonoBehaviour {
     Rect randomDroppingArea;
 
     [HideInInspector]
-    public List<Question> CurrentQuestions = new List<Question>(10); 
+    public List<Question> CurrentQuestions = new List<Question>(10);
+
+    [Range(0, 2000)]
+    public float Money = 1000;
+    [Range(0, 2000)]
+    public float MaxMoney = 2000;
+    [Range(0, 20)]
+    public float MaxMoneyScale = 12;
+
+    SpriteRenderer bar;
+    TextMesh moneyText;
+
+    public bool IsGameOver;
 
     void Start() {
+        bar = GetComponentInChildren<SpriteRenderer>();
+        moneyText = GetComponentInChildren<TextMesh>();
         // get random dropping area from the box collider's bounds
         {
             var boxCollider = GetComponent<BoxCollider2D>();
             randomDroppingArea = new Rect(boxCollider.offset - boxCollider.size/2, boxCollider.size);
         }
-    }
-
-    public void TrySolution(float solution) {
-        for (int i = 0; i < CurrentQuestions.Count; i++) {
-            var question = CurrentQuestions[i];
-            if (solution == question.GetSolution()) {
-                Destroy(question.gameObject);
-                CurrentQuestions.RemoveAt(i);
-                i--;
-            }
-        }
+        timeSinceLastQuestion = SecondsPerQuestion;
     }
     
     void Update() {
-        timeSinceLastQuestion += Time.deltaTime;
+        if (!IsGameOver) {
+            timeSinceLastQuestion += Time.deltaTime;
+        }
         // drop new question
         {
             if (timeSinceLastQuestion >= SecondsPerQuestion) {
@@ -52,6 +58,25 @@ public class QuestionDropper : MonoBehaviour {
                     CurrentQuestions.RemoveAt(i);
                     i--;
                 }
+            }
+        }
+        // size bar based on money
+        {
+            var moneyRatio = Money / MaxMoney;
+            moneyRatio = moneyRatio < 0 ? 0 : moneyRatio;
+            bar.transform.localScale = bar.transform.localScale.withX(moneyRatio * MaxMoneyScale);
+        }
+        // update text based on money
+        {
+            moneyText.text = Money.ToString("C");
+        }
+        // game over if money is 0
+        {
+            if (Money <= 0) {
+                for (int i = 0; i < CurrentQuestions.Count; i++) {
+                    Destroy(CurrentQuestions[i].gameObject);
+                }
+                CurrentQuestions.Clear();
             }
         }
     }

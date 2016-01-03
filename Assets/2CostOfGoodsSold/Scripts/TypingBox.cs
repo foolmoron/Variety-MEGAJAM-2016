@@ -42,9 +42,17 @@ public class TypingBox : MonoBehaviour {
             finalNumber = float.Parse(currencyFormatted.Substring(1));
             popupText.GetComponent<TextMesh>().text = currencyFormatted;
         }
-        // send solution to question dropper
+        // kill numbers that match
         {
-            questionDropper.TrySolution(finalNumber);
+            for (int i = 0; i < questionDropper.CurrentQuestions.Count; i++) {
+                var question = questionDropper.CurrentQuestions[i];
+                if (finalNumber == question.GetSolution()) {
+                    Destroy(question.gameObject);
+                    questionDropper.CurrentQuestions.RemoveAt(i);
+                    i--;
+                    questionDropper.Money += finalNumber;
+                }
+            }
         }
     }
 

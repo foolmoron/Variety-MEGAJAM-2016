@@ -46,7 +46,7 @@ public class Question : MonoBehaviour {
         }
         // falling speed based on part complexity (i.e. "difficulty")
         {
-            var complexity = WholePart * DecimalTensPart * Multiplier;
+            var complexity = (WholePart + 1) * (DecimalTensPart + 1) * Multiplier;
             var difficulty = complexity / 2500;
             moving.MovementPerSecond.y = -Mathf.Lerp(MaxFallingSpeed, MinFallingSpeed, difficulty);
         }
