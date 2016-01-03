@@ -19,7 +19,7 @@ public class DieAtY : MonoBehaviour {
         if (transform.position.y <= YToDieAt) {
             var text = ((GameObject)Instantiate(DiePrefab, transform.position + DiePrefabOffset, Quaternion.identity)).GetComponent<TextMesh>();
             var question = GetComponent<Question>();
-            text.text = "-$" + question.WholePart + "." + question.DecimalTensPart + "0";
+            text.text = "-" + question.GetSolution().ToString("C");
             Destroy(gameObject);
             questionDropper.Money -= question.GetSolution();
             questionDropper.QuestionsWrong++;
