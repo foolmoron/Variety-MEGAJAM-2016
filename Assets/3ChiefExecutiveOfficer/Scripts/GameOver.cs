@@ -20,6 +20,8 @@ public class GameOver : MonoBehaviour {
     GameObject stuff;
     Shaker shaker;
     [Range(0, 0.2f)]
+    public float ExecutionShakerMin = 0.01f;
+    [Range(0, 0.2f)]
     public float ExecutionShakerMax = 0.1f;
 
     GameObject peaceText;
@@ -50,6 +52,47 @@ public class GameOver : MonoBehaviour {
         for (int i = 0; i < enemies.Length; i++) {
             Destroy(enemies[i].gameObject);
         }
+
+        // calculate score
+        {
+            var bloods = GameObject.FindGameObjectsWithTag("Blood");
+            var bloodColliders = new CircleCollider2D[bloods.Length];
+            for (int i = 0; i < bloods.Length; i++) {
+                bloodColliders[i] = bloods[i].GetComponent<CircleCollider2D>();
+            }
+
+            var gridMinX = -4f;
+            var gridMinY = -3f;
+            var gridStep = 0.1f;
+            var gridW = 80;
+            var gridH = 60;
+
+            var bloodied = 0f;
+            var veryBloodied = 0f;
+            var clean = 0f;
+            for (int x = 0; x < gridW; x++) {
+                for (int y = 0; y < gridH; y++) {
+                    var point = new Vector2(gridMinX + gridStep * x, gridMinY + gridStep * y);
+                    var overlaps = 0;
+                    for (int i = 0; i < bloodColliders.Length; i++) {
+                        var bloodCollider = bloodColliders[i];
+                        if (bloodCollider.OverlapPoint(point)) {
+                            overlaps++;
+                        }
+                    }
+                    if (overlaps == 0) {
+                        clean++;
+                    } else if (overlaps == 1) {
+                        bloodied++;
+                    } else if (overlaps > 1) {
+                        veryBloodied++;
+                    }
+                }
+            }
+            Bloodied = 100 * bloodied / (gridW * gridH);
+            VeryBloodied = 100 * veryBloodied / (gridW * gridH);
+            Clean = 100 * clean / (gridW * gridH);
+        }
     }
 
     void Update() {
@@ -64,7 +107,7 @@ public class GameOver : MonoBehaviour {
         {
             peaceText.SetActive(Clean >= 100);
             executionText.SetActive(Clean < 100);
-            shaker.Strength = ExecutionShakerMax * (Bloodied + VeryBloodied * 2) / 200;
+            shaker.Strength = Mathf.Lerp(ExecutionShakerMin, ExecutionShakerMax, Mathf.Clamp01((Bloodied + VeryBloodied * 2) / 50));
         }
         // score texts
         {
