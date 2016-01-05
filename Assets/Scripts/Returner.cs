@@ -33,6 +33,11 @@ public class Returner : MonoBehaviour {
             return;
         }
 
+        // position on camera
+        {
+            transform.position = Camera.main.transform.position.withZ(transform.position.z);
+        }
+
         if (Input.GetKey(KeyCode.Escape)) {
             stuff.SetActive(true);
             timeHeld += Time.deltaTime;
