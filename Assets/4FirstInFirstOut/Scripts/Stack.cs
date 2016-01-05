@@ -9,6 +9,10 @@ public class Stack : MonoBehaviour {
     public bool IsAtTop;
     public float HeightLanded = float.NegativeInfinity;
 
+
+    public AudioClip ToppingSound;
+    public AudioClip CollideSound;
+
     void Start() {
     }
 
@@ -30,7 +34,14 @@ public class Stack : MonoBehaviour {
             IsAtTop = true;
             HeightLanded = transform.position.y;
             FollowHeight.Height = transform.position.y;
-            ScoreTracker.Score = Mathf.Max(transform.position.y, ScoreTracker.Score);
+            if (transform.position.y > ScoreTracker.Score) {
+                ScoreTracker.Score = transform.position.y;
+                AudioSource.PlayClipAtPoint(ToppingSound, Vector3.zero);
+            } else {
+                AudioSource.PlayClipAtPoint(CollideSound, Vector3.zero);
+            }
+        } else if (stack) {
+            AudioSource.PlayClipAtPoint(CollideSound, Vector3.zero);
         }
     }
 }
