@@ -3,7 +3,9 @@ using System.Collections;
 
 public class Stack : MonoBehaviour {
 
+    public GameOver4 GameOver;
     public FollowHeight FollowHeight;
+    public StackScoreTracker ScoreTracker;
     public bool IsAtTop;
     public float HeightLanded = float.NegativeInfinity;
 
@@ -13,8 +15,10 @@ public class Stack : MonoBehaviour {
     void Update() {
         // check if the stack tipped
         {
-            if (transform.position.y < (HeightLanded - 0.1f)) {
-                Debug.Log("TIPPED");
+            if (transform.position.y < (HeightLanded - 1f)) {
+                if (!GameOver.IsGameOver) {
+                    GameOver.DoGameOver();
+                }
             }
         }
     }
@@ -26,6 +30,7 @@ public class Stack : MonoBehaviour {
             IsAtTop = true;
             HeightLanded = transform.position.y;
             FollowHeight.Height = transform.position.y;
+            ScoreTracker.Score = Mathf.Max(transform.position.y, ScoreTracker.Score);
         }
     }
 }

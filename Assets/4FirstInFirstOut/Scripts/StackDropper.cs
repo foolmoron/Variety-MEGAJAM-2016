@@ -11,10 +11,14 @@ public class StackDropper : MonoBehaviour {
     HSBColor currentColor;
     SpriteRenderer sprite;
 
+    GameOver4 gameOver;
     FollowHeight followHeight;
-    
+    StackScoreTracker scoreTracker;
+
     void Start() {
+        gameOver = FindObjectOfType<GameOver4>();
         followHeight = FindObjectOfType<FollowHeight>();
+        scoreTracker = FindObjectOfType<StackScoreTracker>();
         sprite = GetComponent<SpriteRenderer>();
         currentColor = HSBColor.FromColor(sprite.color);
     }
@@ -33,7 +37,9 @@ public class StackDropper : MonoBehaviour {
                 drop.transform.localScale = transform.localScale;
 
                 var dropStack = drop.GetComponent<Stack>();
+                dropStack.GameOver = gameOver;
                 dropStack.FollowHeight = followHeight;
+                dropStack.ScoreTracker = scoreTracker;
 
                 var dropSprite = drop.GetComponent<SpriteRenderer>();
                 dropSprite.color = sprite.color.withAlpha(1);
