@@ -12,6 +12,6 @@ public class StackScoreTracker : MonoBehaviour {
     }
 
     void Update() {
-        text.text = Score.ToString("0.0m");
+        text.text = Score.ToString("0.00m");
     }
 }
