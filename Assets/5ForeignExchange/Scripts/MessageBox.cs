@@ -9,7 +9,7 @@ public class MessageBox : MonoBehaviour {
 
     Vector3 originalPos;
 
-    void Start() {
+    void Awake() {
         originalPos = transform.position;
     }
 
