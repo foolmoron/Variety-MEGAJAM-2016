@@ -4,23 +4,23 @@ using System.Collections;
 public class Message : MonoBehaviour {
 
     public string Name;
-    TextMesh name;
+    TextMesh nameText;
 
     public string Text;
-    TextMesh message;
+    TextMesh messageText;
 
     void Start() {
-        name = transform.FindChild("Name").GetComponent<TextMesh>();
-        message = transform.FindChild("Message").GetComponent<TextMesh>();
-        name.text = Name;
-        message.text = Text;
+        nameText = transform.FindChild("Name").GetComponent<TextMesh>();
+        messageText = transform.FindChild("Message").GetComponent<TextMesh>();
+        nameText.text = Name;
+        messageText.text = Text;
     }
 
     void Update() {
         // reset texts
         {
-            name.text = Name;
-            message.text = Text;
+            nameText.text = Name;
+            messageText.text = Text;
         }
     }
 }

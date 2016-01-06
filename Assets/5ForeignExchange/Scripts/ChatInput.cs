@@ -39,7 +39,7 @@ public class ChatInput : MonoBehaviour {
                 messageBox.AddMessage(message.transform);
                 text = "";
                 AudioSource.PlayClipAtPoint(SubmitSound, Vector3.zero);
-                them.Respond(); // this line feels really creepy for some reason
+                them.AskForResponse(); // this line feels really creepy for some reason
             } else if (32 <= ch && ch <= 126 && text.Length < MaxInputLength) {
                 text += str;
                 AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
