@@ -26,3 +26,9 @@ Theme: FIFO - First In, First Out
 Genre: Stacking  
 Timelapse: https://youtu.be/r2u8v4q8nac  
 Stack blocks up as high as you can!  
+
+## Game #5
+Theme: FX - Foreign Exchange Markets
+Genre: Chatbot 
+Timelapse: https://youtu.be/vnqvjN6SL-E  
+Chat against a random "foreigner" online. 
