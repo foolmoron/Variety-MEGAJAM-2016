@@ -7,7 +7,7 @@ public class FollowHeight : MonoBehaviour {
     public float Offset = -1;
     public float MinHeight = 0;
     [Range(0, 0.25f)]
-    public float Speed = 0.5f;
+    public float Speed = 0.2f;
 
     new Camera camera;
 
