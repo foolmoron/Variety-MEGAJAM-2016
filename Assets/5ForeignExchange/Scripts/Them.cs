@@ -35,6 +35,8 @@ public class Them : MonoBehaviour {
     public void AskForResponse() {
         if (waitingTime <= 0) {
             waitingTime = Mathf.Lerp(MinWaitTime, MaxWaitTime, Random.value);
+        } else {
+            waitingTime /= 2;
         }
     }
 
