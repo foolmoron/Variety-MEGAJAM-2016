@@ -11,7 +11,11 @@ public class ChatInput : MonoBehaviour {
     public AudioClip TypeSound;
     public AudioClip SubmitSound;
 
+    public GameObject MessagePrefab;
+    MessageBox messageBox;
+
     void Start() {
+        messageBox = FindObjectOfType<MessageBox>();
         input = transform.FindChild("Input").GetComponent<TextMesh>();
         input.text = "";
     }
@@ -28,6 +32,9 @@ public class ChatInput : MonoBehaviour {
                     AudioSource.PlayClipAtPoint(TypeSound, Vector3.zero);
                 }
             } else if (Input.GetKeyDown(KeyCode.Return)) {
+                var message = Instantiate(MessagePrefab);
+                message.GetComponent<Message>().Text = text;
+                messageBox.AddMessage(message.transform);
                 text = "";
                 AudioSource.PlayClipAtPoint(SubmitSound, Vector3.zero);
             } else if (32 <= ch && ch <= 126 && text.Length < MaxInputLength) {
