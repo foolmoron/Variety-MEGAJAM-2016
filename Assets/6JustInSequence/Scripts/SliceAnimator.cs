@@ -86,6 +86,14 @@ public class SliceAnimator : MonoBehaviour {
         }
     }
 
-    void Update() {
+    Coroutine victory;
+    public void Victory() {
+        if (victory != null) {
+            StopCoroutine(victory);
+        }
+        for (int i = 0; i < Slices.Length; i++) {
+            ResetSlice(i);
+        }
+        //victory = StartCoroutine(Victory(2f));
     }
 }
