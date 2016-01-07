@@ -6,8 +6,13 @@ public class SliceAnimator : MonoBehaviour {
 
     // requires 20 slices because whatever
     public Image[] Slices;
+    Color[] originalColors;
 
     void Start() {
+        originalColors = new Color[Slices.Length];
+        for (int i = 0; i < Slices.Length; i++) {
+            originalColors[i] = Slices[i].color;
+        }
         for (int i = 0; i < Slices.Length; i++) {
             ResetSlice(i);
         }
@@ -15,11 +20,12 @@ public class SliceAnimator : MonoBehaviour {
 
     public void ResetSlice(int i) {
         var slice = Slices[i];
+        slice.color = originalColors[i];
         slice.transform.localScale = new Vector3(0, 0, 1);
-        slice.fillAmount = 0.05f;
         slice.transform.rotation = Quaternion.Euler(0, 0, -45 + 18 * i);
+        slice.fillAmount = 0.05f;
     }
-
+    
     Coroutine topFlash;
     public void TopFlash() {
         if (topFlash != null) {
@@ -88,12 +94,59 @@ public class SliceAnimator : MonoBehaviour {
 
     Coroutine victory;
     public void Victory() {
-        if (victory != null) {
-            StopCoroutine(victory);
+        StopAllCoroutines();
+        for (int i = 0; i < Slices.Length; i++) {
+            ResetSlice(i);
+        }
+        victory = StartCoroutine(RadialColors(0.4f, 1.2f, 0.4f, false, 1f));
+    }
+
+    Coroutine error;
+    public void Error() {
+        StopAllCoroutines();
+        for (int i = 0; i < Slices.Length; i++) {
+            ResetSlice(i);
+        }
+        error = StartCoroutine(RadialColors(0.3f, 0.4f, 1.0f, true, 1f));
+    }
+
+    IEnumerator RadialColors(float sprayMaxTime, float rotateTime, float wipeMaxTime, bool red, float hueSpeed) {
+        var sprayTimes = new float[Slices.Length];
+        for (int i = 0; i < sprayTimes.Length; i++) {
+            sprayTimes[i] = Mathf.Lerp(sprayMaxTime / 4, sprayMaxTime, Random.value);
+        }
+        var wipeTimes = new float[Slices.Length];
+        for (int i = 0; i < wipeTimes.Length; i++) {
+            wipeTimes[i] = Mathf.Lerp(wipeMaxTime / 4, wipeMaxTime, Random.value);
+        }
+
+        var overallTime = 0f;
+        while (overallTime < (sprayMaxTime + rotateTime + wipeMaxTime)) {
+            overallTime += Time.deltaTime;
+            if (overallTime > 0 && overallTime < sprayMaxTime) {
+                var t = overallTime - 0;
+                for (int i = 0; i < Slices.Length; i++) {
+                    Slices[i].transform.localScale = new Vector3(Interpolate.Ease(Interpolate.EaseType.Linear)(0, 1, t, sprayTimes[i]), Interpolate.Ease(Interpolate.EaseType.Linear)(0, 1, t, sprayTimes[i]));
+                }
+            } else if (overallTime >= sprayMaxTime && overallTime < (sprayMaxTime + rotateTime)) {
+                var t = overallTime - sprayMaxTime;
+            } else if (overallTime >= (sprayMaxTime + rotateTime) && overallTime < (sprayMaxTime + rotateTime + wipeMaxTime)) {
+                var t = overallTime - (sprayMaxTime + rotateTime);
+                for (int i = 0; i < Slices.Length; i++) {
+                    Slices[i].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.05f, -0.05f, t, wipeTimes[i]);
+                    Slices[i].transform.rotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * i, 9, t, wipeTimes[i]));
+                }
+            }
+
+            for (int i = 0; i < Slices.Length; i++) {
+                var slice = Slices[i];
+                var lerp = ((float)i / Slices.Length + (overallTime * hueSpeed)) % 1;
+                slice.color = new HSBColor(red ? (0.96f + Mathf.Sin(lerp * 6 * Mathf.PI) * 0.04f) % 1 : lerp, 1, 1, 1).ToColor();
+            }
+            yield return new WaitForEndOfFrame();
         }
         for (int i = 0; i < Slices.Length; i++) {
             ResetSlice(i);
         }
-        //victory = StartCoroutine(Victory(2f));
     }
 }

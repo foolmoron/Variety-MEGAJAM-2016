@@ -44,6 +44,10 @@ public class TurnTracker : MonoBehaviour {
 
     public void IncreaseLevel() {
         Level++;
+        Reset();
+    }
+
+    public void Reset() {
         CurrentSequence.Clear();
         buttonTime = -1f;
         switchTime = 0;

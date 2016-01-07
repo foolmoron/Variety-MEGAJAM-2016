@@ -11,10 +11,10 @@ public class SimonTracker : MonoBehaviour {
 
     public int CurrentSequenceIndex;
 
-    [Range(0, 2)]
-    public float VictoryDelay = 1f;
-    bool shouldVictory;
-    float victoryTime;
+    [Range(0, 4)]
+    public float SwitchDelay = 2.5f;
+    bool shouldSwitch;
+    float switchTime;
 
     TurnTracker turnTracker;
     SliceAnimator sliceAnimator;
@@ -23,20 +23,16 @@ public class SimonTracker : MonoBehaviour {
         turnTracker = FindObjectOfType<TurnTracker>();
         sliceAnimator = FindObjectOfType<SliceAnimator>();
     }
-
-    public void Error() {
-        CurrentSequenceIndex = 0;
-    }
-
+    
     void Update() {
         // get input 
         {
-            if (turnTracker.PlayerTurn && !shouldVictory) {
+            if (turnTracker.PlayerTurn && !shouldSwitch) {
                 if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
                     TopButton.Pulse();
                     sliceAnimator.TopFlash();
                     if (turnTracker.CurrentSequence[CurrentSequenceIndex] != "Up") {
-                        Error();
+                        CurrentSequenceIndex = -1;
                     } else {
                         CurrentSequenceIndex++;
                     }
@@ -44,7 +40,7 @@ public class SimonTracker : MonoBehaviour {
                     BottomButton.Pulse();
                     sliceAnimator.BottomFlash();
                     if (turnTracker.CurrentSequence[CurrentSequenceIndex] != "Down") {
-                        Error();
+                        CurrentSequenceIndex = -1;
                     } else {
                         CurrentSequenceIndex++;
                     }
@@ -52,7 +48,7 @@ public class SimonTracker : MonoBehaviour {
                     RightButton.Pulse();
                     sliceAnimator.RightFlash();
                     if (turnTracker.CurrentSequence[CurrentSequenceIndex] != "Right") {
-                        Error();
+                        CurrentSequenceIndex = -1;
                     } else {
                         CurrentSequenceIndex++;
                     }
@@ -60,7 +56,7 @@ public class SimonTracker : MonoBehaviour {
                     LeftButton.Pulse();
                     sliceAnimator.LeftFlash();
                     if (turnTracker.CurrentSequence[CurrentSequenceIndex] != "Left") {
-                        Error();
+                        CurrentSequenceIndex = -1;
                     } else {
                         CurrentSequenceIndex++;
                     }
@@ -68,18 +64,24 @@ public class SimonTracker : MonoBehaviour {
                 if (CurrentSequenceIndex == turnTracker.CurrentSequence.Count) {
                     sliceAnimator.Victory();
                     turnTracker.IncreaseLevel();
-                    shouldVictory = true;
-                    victoryTime = 0;
+                    shouldSwitch = true;
+                    switchTime = 0;
+                    CurrentSequenceIndex = 0;
+                } else if (CurrentSequenceIndex < 0) {
+                    sliceAnimator.Error();
+                    turnTracker.Reset();
+                    shouldSwitch = true;
+                    switchTime = 0;
                     CurrentSequenceIndex = 0;
                 }
             }
         }
         // do victory after delay
         {
-            if (shouldVictory) {
-                victoryTime += Time.deltaTime;
-                if (victoryTime >= VictoryDelay) {
-                    shouldVictory = false;
+            if (shouldSwitch) {
+                switchTime += Time.deltaTime;
+                if (switchTime >= SwitchDelay) {
+                    shouldSwitch = false;
                     turnTracker.PlayerTurn = false;
                 }
             }

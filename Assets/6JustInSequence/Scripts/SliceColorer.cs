@@ -8,18 +8,13 @@ public class SliceColorer : MonoBehaviour {
     
     public Color InitialColor;
 
-    void Start() {
-    }
-
-    void Update() {
-        // set all slice colors around
-        {
-            var hsb = HSBColor.FromColor(InitialColor);
-            for (int i = 0; i < Slices.Length; i++) {
-                var slice = Slices[i];
-                var lerp = (float)i / Slices.Length;
-                slice.color = new HSBColor((hsb.h + lerp) % 1, hsb.s, hsb.b, hsb.a).ToColor();
-            }
+    void Awake() {
+        // just set colors at start since they won't change
+        var hsb = HSBColor.FromColor(InitialColor);
+        for (int i = 0; i < Slices.Length; i++) {
+            var slice = Slices[i];
+            var lerp = (float)i / Slices.Length;
+            slice.color = new HSBColor((hsb.h + lerp) % 1, hsb.s, hsb.b, hsb.a).ToColor();
         }
     }
 }
