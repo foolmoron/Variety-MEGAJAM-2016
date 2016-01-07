@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
@@ -20,6 +21,7 @@ public class PositionSelectedObjects : ScriptableWizard {
 
     public PositionSelectedObjects() {
         ObjectsToPosition = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable);
+        Array.Sort(ObjectsToPosition, (t1, t2) => t1.name.CompareTo(t2.name));
         InitialPosition = initialPosition;
         PositionStep = positionStep;
         Local = local;
