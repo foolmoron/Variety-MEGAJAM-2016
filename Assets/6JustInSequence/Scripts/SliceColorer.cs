@@ -18,7 +18,7 @@ public class SliceColorer : MonoBehaviour {
             for (int i = 0; i < Slices.Length; i++) {
                 var slice = Slices[i];
                 var lerp = (float)i / Slices.Length;
-                slice.color = new HSBColor((hsb.h + lerp) % 1, hsb.s, hsb.b).ToColor();
+                slice.color = new HSBColor((hsb.h + lerp) % 1, hsb.s, hsb.b, hsb.a).ToColor();
             }
         }
     }
