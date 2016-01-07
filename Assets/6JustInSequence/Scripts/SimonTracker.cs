@@ -19,42 +19,69 @@ public class SimonTracker : MonoBehaviour {
     TurnTracker turnTracker;
     SliceAnimator sliceAnimator;
 
+
+    public AudioClip UpSound;
+    public AudioClip DownSound;
+    public AudioClip RightSound;
+    public AudioClip LeftSound;
+    public AudioClip WinSound;
+    public AudioClip LoseSound;
+    AudioSource audioSource;
+
     void Start() {
         turnTracker = FindObjectOfType<TurnTracker>();
         sliceAnimator = FindObjectOfType<SliceAnimator>();
+        audioSource = GetComponent<AudioSource>();
     }
-    
+
+    public void AnimateUp() {
+        TopButton.Pulse();
+        sliceAnimator.TopFlash();
+        audioSource.PlayOneShot(UpSound);
+    }
+    public void AnimateDown() {
+        BottomButton.Pulse();
+        sliceAnimator.BottomFlash();
+        audioSource.PlayOneShot(DownSound);
+    }
+    public void AnimateRight() {
+        RightButton.Pulse();
+        sliceAnimator.RightFlash();
+        audioSource.PlayOneShot(RightSound);
+    }
+    public void AnimateLeft() {
+        LeftButton.Pulse();
+        sliceAnimator.LeftFlash();
+        audioSource.PlayOneShot(LeftSound);
+    }
+
     void Update() {
         // get input 
         {
             if (turnTracker.PlayerTurn && !shouldSwitch) {
                 if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) {
-                    TopButton.Pulse();
-                    sliceAnimator.TopFlash();
+                    AnimateUp();
                     if (turnTracker.CurrentSequence[CurrentSequenceIndex] != "Up") {
                         CurrentSequenceIndex = -1;
                     } else {
                         CurrentSequenceIndex++;
                     }
                 } else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) {
-                    BottomButton.Pulse();
-                    sliceAnimator.BottomFlash();
+                    AnimateDown();
                     if (turnTracker.CurrentSequence[CurrentSequenceIndex] != "Down") {
                         CurrentSequenceIndex = -1;
                     } else {
                         CurrentSequenceIndex++;
                     }
                 } else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) {
-                    RightButton.Pulse();
-                    sliceAnimator.RightFlash();
+                    AnimateRight();
                     if (turnTracker.CurrentSequence[CurrentSequenceIndex] != "Right") {
                         CurrentSequenceIndex = -1;
                     } else {
                         CurrentSequenceIndex++;
                     }
                 } else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) {
-                    LeftButton.Pulse();
-                    sliceAnimator.LeftFlash();
+                    AnimateLeft();
                     if (turnTracker.CurrentSequence[CurrentSequenceIndex] != "Left") {
                         CurrentSequenceIndex = -1;
                     } else {
@@ -67,12 +94,14 @@ public class SimonTracker : MonoBehaviour {
                     shouldSwitch = true;
                     switchTime = 0;
                     CurrentSequenceIndex = 0;
+                    audioSource.PlayOneShot(WinSound);
                 } else if (CurrentSequenceIndex < 0) {
                     sliceAnimator.Error();
                     turnTracker.Reset();
                     shouldSwitch = true;
                     switchTime = 0;
                     CurrentSequenceIndex = 0;
+                    audioSource.PlayOneShot(LoseSound);
                 }
             }
         }

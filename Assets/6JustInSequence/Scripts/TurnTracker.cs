@@ -72,23 +72,19 @@ public class TurnTracker : MonoBehaviour {
                     switch (Random.Range(0, 4)) {
                         case 0:
                             CurrentSequence.Add("Up");
-                            simonTracker.TopButton.Pulse();
-                            sliceAnimator.TopFlash();
+                            simonTracker.AnimateUp();
                             break;
                         case 1:
                             CurrentSequence.Add("Down");
-                            simonTracker.BottomButton.Pulse();
-                            sliceAnimator.BottomFlash();
+                            simonTracker.AnimateDown();
                             break;
                         case 2:
                             CurrentSequence.Add("Right");
-                            simonTracker.RightButton.Pulse();
-                            sliceAnimator.RightFlash();
+                            simonTracker.AnimateRight();
                             break;
                         case 3:
                             CurrentSequence.Add("Left");
-                            simonTracker.LeftButton.Pulse();
-                            sliceAnimator.LeftFlash();
+                            simonTracker.AnimateLeft();
                             break;
                     }
                     buttonTime = 0;
