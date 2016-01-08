@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Player7 : MonoBehaviour {
 
+    public GameObject OffOnInput;
+
     [Range(0, 30)]
     public float JumpForce = 8;
     [Range(0, 30)]
@@ -35,11 +37,14 @@ public class Player7 : MonoBehaviour {
         if (Input.GetKeyDown(UpKey)) {
             velocity.y += JumpForce;
             rigidbody.angularVelocity = Mathf.Sign(Random.value - 0.5f) * Mathf.Lerp(MinRandomRotation, MaxRandomRotation, Random.value);
+            OffOnInput.SetActive(false);
         }
         if (Input.GetKey(LeftKey)) {
             velocity.x = -Speed;
+            OffOnInput.SetActive(false);
         } else if (Input.GetKey(RightKey)) {
             velocity.x = Speed;
+            OffOnInput.SetActive(false);
         } else if (Input.GetKey(UpKey)) {
         }
         rigidbody.velocity = velocity;
