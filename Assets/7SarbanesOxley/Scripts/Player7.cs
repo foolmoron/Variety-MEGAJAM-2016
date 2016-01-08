@@ -19,11 +19,18 @@ public class Player7 : MonoBehaviour {
 
     new Rigidbody2D rigidbody;
 
+    ScoreTracker7 scoreTracker;
+
     void Start() {
         rigidbody = GetComponent<Rigidbody2D>();
+        scoreTracker = FindObjectOfType<ScoreTracker7>();
     }
 
     void Update() {
+        if (scoreTracker.GameOver) {
+            return;
+        }
+
         var velocity = rigidbody.velocity;
         if (Input.GetKeyDown(UpKey)) {
             velocity.y += JumpForce;
