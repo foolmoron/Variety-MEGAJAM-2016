@@ -38,3 +38,9 @@ Theme: JIS - Just In Sequence
 Genre: Simon Says  
 Timelapse: https://youtu.be/PROcYS08Lfs​  
 Simon Says with cool colors.  
+
+## Game #7
+Theme: Sarbanes-Oxley  
+Genre: Competitive Graffiti  
+Timelapse: https://youtu.be/6azHDs1E3rQ  
+Paint as much of the level as you can before the timer runs out.  
