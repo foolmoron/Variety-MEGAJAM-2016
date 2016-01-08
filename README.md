@@ -32,3 +32,9 @@ Theme: FX - Foreign Exchange Markets
 Genre: Chatbot 
 Timelapse: https://youtu.be/vnqvjN6SL-E  
 Chat against a random "foreigner" online. 
+
+## Game #6
+Theme: JIS - Just In Sequence  
+Genre: Simon Says  
+Timelapse: https://youtu.be/PROcYS08Lfs​  
+Simon Says with cool colors.  
