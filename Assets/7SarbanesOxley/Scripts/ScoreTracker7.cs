@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ScoreTracker7 : MonoBehaviour {
@@ -20,8 +21,10 @@ public class ScoreTracker7 : MonoBehaviour {
 
     public GameObject SarbanesWins;
     public GameObject OxleyWins;
+    public GameObject Tie;
     public TextMesh SarbanesPerc;
     public TextMesh OxleyPerc;
+    public GameObject Rematch;
 
     void Start() {
         pieces = FindObjectsOfType<GetColored>();
@@ -57,17 +60,29 @@ public class ScoreTracker7 : MonoBehaviour {
         // game over 
         {
             if (TimeLeft <= 0) {
+                var colorers = FindObjectsOfType<Colorer>();
+                for (int i = 0; i < colorers.Length; i++) {
+                    Destroy(colorers[i]);
+                }
                 GameOver = true;
             }
         }
         // game over texts
         {
-            SarbanesWins.SetActive(GameOver && sarbanesPerc >= 0.5f);
+            SarbanesWins.SetActive(GameOver && sarbanesPerc > 0.5f);
             OxleyWins.SetActive(GameOver && sarbanesPerc < 0.5f);
+            Tie.SetActive(GameOver && sarbanesPerc == 0.5f);
             SarbanesPerc.gameObject.SetActive(GameOver);
             OxleyPerc.gameObject.SetActive(GameOver);
             SarbanesPerc.text = (100 * sarbanesPerc).ToString("F2") + "%";
-            OxleyPerc.text = (100 - 100 * sarbanesPerc).ToString("F2") + "%"; 
+            OxleyPerc.text = (100 - 100 * sarbanesPerc).ToString("F2") + "%";
+            Rematch.SetActive(GameOver);
+        }
+        // rematch
+        {
+            if (GameOver && Input.GetKeyDown(KeyCode.Space)) {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
         }
     }
 }
