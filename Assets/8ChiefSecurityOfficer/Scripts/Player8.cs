@@ -18,6 +18,16 @@ public class Player8 : MonoBehaviour {
     [Range(0, 0.25f)]
     public float LightRotationSpeed = 0.1f;
     float targetLightRotation;
+
+
+    public AnimationCurve MoveBobbing;
+    public float MoveAnimationScale;
+    public float CameraMoveScale;
+    float animationPosition;
+
+    Shaker shaker;
+    [Range(0, 0.2f)]
+    public float MaxShake = 0.04f;
     
     void Start() {
         Cursor.lockState = CursorLockMode.Confined;
@@ -25,6 +35,7 @@ public class Player8 : MonoBehaviour {
         controller = GetComponent<CharacterController>();
         camera = GetComponentInChildren<Camera>();
         light = GetComponentInChildren<Light>();
+        shaker = GetComponentInChildren<Shaker>();
     }
     
     void Update() {
@@ -38,8 +49,21 @@ public class Player8 : MonoBehaviour {
             controller.transform.Rotate(0, HorizontalRotateSpeed * Input.GetAxis("Mouse X"), 0);
         }
         // player movement
+        var movement = 0f;
         {
-            controller.Move(transform.TransformVector(new Vector3(MoveSpeed * Input.GetAxis("Horizontal"), 0, MoveSpeed * Input.GetAxis("Vertical")) * MoveSpeed * Time.deltaTime));
+            movement = MoveSpeed * Mathf.Max(Input.GetAxis("Vertical"), 0) * MoveSpeed * Time.deltaTime;
+            controller.Move(transform.TransformVector(0, 0, movement));
+        }
+        // animate based on movement
+        {
+            if (movement != 0) {
+                animationPosition += movement * MoveAnimationScale;
+                camera.transform.localRotation = Quaternion.Euler(0, 0, MoveBobbing.Evaluate(animationPosition) * 360f);
+                camera.transform.localPosition = camera.transform.localPosition.withX(MoveBobbing.Evaluate(animationPosition) * CameraMoveScale);
+            } else {
+                camera.transform.localRotation = Quaternion.identity;
+                camera.transform.localPosition = camera.transform.localPosition.withX(0);
+            }
         }
     }
 }
