@@ -42,20 +42,16 @@ public class TheBox : MonoBehaviour {
                 pauseTime = PauseAfterLose;
                 transform.position = Vector3.zero;
                 transform.localScale = Vector3.one * 0.5f;
+                StopAllCoroutines();
             }
         }
-        // check for restart
+        // check for game start or restart
         {
-            if (!IsStarted && IsGameOver && pauseTime <= 0 && inBox) {
+            if (!IsStarted && inBox && (!IsGameOver || pauseTime <= 0)) {
                 IsStarted = true;
                 IsGameOver = false;
                 TimeAlive = 0;
-            }
-        }
-        // check for game start
-        {
-            if (!IsStarted && !IsGameOver && inBox) {
-                IsStarted = true;
+                StartCoroutine(RandomSizings());
             }
         }
         // add time if started 
@@ -79,6 +75,13 @@ public class TheBox : MonoBehaviour {
             ScoreText.text = "you were in there for\n" + TimeAlive.ToString("0.00") + " seconds";
             RestartText.SetActive(IsGameOver && pauseTime <= 0);
             sprite.enabled = pauseTime <= 0;
+        }
+    }
+
+    IEnumerator RandomSizings() {
+        while (true) {
+            Debug.Log("x");
+            yield return new WaitForSeconds(2f);
         }
     }
 }
