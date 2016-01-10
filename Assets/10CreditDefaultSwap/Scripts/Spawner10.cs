@@ -25,8 +25,9 @@ public class Spawner10 : MonoBehaviour {
         // get random dropping area from the box collider's bounds
         {
             var boxCollider = GetComponent<BoxCollider2D>();
-            randomDroppingArea = new Rect(boxCollider.offset - boxCollider.size / 2, boxCollider.size);
+            randomDroppingArea = new Rect(boxCollider.offset - Vector2.Scale(boxCollider.size, transform.localScale) / 2, Vector2.Scale(boxCollider.size, transform.localScale));
         }
+        timeSinceLastSpawn = Random.value * MaxSecondsPerSpawn;
     }
     
     void Update() {

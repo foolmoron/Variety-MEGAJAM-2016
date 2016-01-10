@@ -9,13 +9,23 @@ public class Player10 : MonoBehaviour {
     public float RotationSpeed = 0.1f;
 
     Vector2 lastDirection;
+    
+    public float TimeAlive;
+    public AnimationCurve TimeToDifficulty;
+    public GameObject GameOverObject;
+    public TextMesh ScoreText;
 
     new Rigidbody2D rigidbody;
 
+    Colorizer10 colorizer;
+    Spawner10[] spawners;
+
     void Start() {
         rigidbody = GetComponent<Rigidbody2D>();
+        colorizer = Colorizer10.instance;
+        spawners = FindObjectsOfType<Spawner10>();
     }
-    
+
     void Update() {
         var direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         if (direction != Vector2.zero) {
@@ -30,5 +40,30 @@ public class Player10 : MonoBehaviour {
             var desiredAngle = Mathf.Atan2(lastDirection.y, lastDirection.x) * Mathf.Rad2Deg - 90;
             transform.localRotation = Quaternion.Euler(0, 0, Mathf.LerpAngle(transform.localRotation.eulerAngles.z, desiredAngle, RotationSpeed));
         }
+        // time alive
+        {
+            TimeAlive += Time.deltaTime;
+        }
+        // spawner difficulty
+        {
+            var difficulty = TimeToDifficulty.Evaluate(TimeAlive);
+            for (int i = 0; i < spawners.Length; i++) {
+                spawners[i].Difficulty = difficulty;
+            }
+        }
+    }
+
+    public void GameOver() {
+        var movers = FindObjectsOfType<Moving>();
+        for (int i = 0; i < movers.Length; i++) {
+            movers[i].enabled = false;
+        }
+        for (int i = 0; i < spawners.Length; i++) {
+            Destroy(spawners[i]);
+        }
+        GameOverObject.SetActive(true);
+        ScoreText.text = "You survived\n" + TimeAlive.ToString("0.00") + " seconds";
+        rigidbody.velocity = Vector2.zero;
+        enabled = false; // no more control for player
     }
 }
