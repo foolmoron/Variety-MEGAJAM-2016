@@ -32,6 +32,9 @@ public class TheBox : MonoBehaviour {
     new BoxCollider2D collider;
     SpriteRenderer sprite;
 
+    public AudioClip StartSound;
+    public AudioClip LoseSound;
+
     void Start() {
         collider = GetComponent<BoxCollider2D>();
         sprite = GetComponent<SpriteRenderer>();
@@ -58,7 +61,7 @@ public class TheBox : MonoBehaviour {
                 transform.position = Vector3.zero;
                 transform.localScale = Vector3.one;
                 StopAllCoroutines();
-                
+                AudioSource.PlayClipAtPoint(LoseSound, Vector3.zero);
             }
         }
         // check for game start or restart
@@ -68,6 +71,7 @@ public class TheBox : MonoBehaviour {
                 IsGameOver = false;
                 TimeAlive = 0;
                 StartCoroutine(RandomSizings());
+                AudioSource.PlayClipAtPoint(StartSound, Vector3.zero);
             }
         }
         // add time if started 
