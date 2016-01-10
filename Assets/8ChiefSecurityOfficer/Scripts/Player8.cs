@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class Player8 : MonoBehaviour {
 
@@ -11,6 +12,7 @@ public class Player8 : MonoBehaviour {
 
     CharacterController controller;
     new Camera camera;
+    new AudioSource audio;
 
     new Light light;
     [Range(0, 1000)]
@@ -18,8 +20,7 @@ public class Player8 : MonoBehaviour {
     [Range(0, 0.25f)]
     public float LightRotationSpeed = 0.1f;
     float targetLightRotation;
-
-
+    
     public AnimationCurve MoveBobbing;
     public float MoveAnimationScale;
     public float CameraMoveScale;
@@ -36,7 +37,6 @@ public class Player8 : MonoBehaviour {
     public AnimationCurve DistanceToStatic;
     ScaryItem[] items;
     Staticer staticer;
-    public AudioClip ItemSound;
 
     public TextMesh ItemCount;
     [Range(0, 5)]
@@ -45,10 +45,15 @@ public class Player8 : MonoBehaviour {
 
     public GameObject Instructions;
 
+    public bool IsGameOver;
+    [Range(0, 5)]
+    public float GameOverTime = 2;
+
     void Start() {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
         controller = GetComponent<CharacterController>();
+        audio = GetComponent<AudioSource>();
         camera = GetComponentInChildren<Camera>();
         light = GetComponentInChildren<Light>();
         shaker = GetComponentInChildren<Shaker>();
@@ -125,6 +130,15 @@ public class Player8 : MonoBehaviour {
                 ItemCount.gameObject.SetActive(false);
             }
         }
+        // game over
+        {
+            if (IsGameOver) {
+                GameOverTime -= Time.deltaTime;
+                if (GameOverTime < 0) {
+                    SceneManager.LoadScene("MainMenu");
+                }
+            }
+        }
     }
 
     void OnTriggerEnter(Collider other) {
@@ -133,7 +147,22 @@ public class Player8 : MonoBehaviour {
             Destroy(item.gameObject);
             staticer.OnFrames = 20;
             itemCountTime = ItemCountTime;
-            AudioSource.PlayClipAtPoint(ItemSound, camera.transform.position);
+            audio.loop = false;
+            audio.Play();
+            // check for game over after grabbing last item
+            {
+                var itemsLeft = 0;
+                for (int i = 0; i < items.Length; i++) {
+                    if (items[i]) {
+                        itemsLeft++;
+                    }
+                }
+                if (itemsLeft == 1) {
+                    audio.loop = true;
+                    staticer.OnFrames = int.MaxValue;
+                    IsGameOver = true;
+                }
+            }
         }
         // turn off instructions when hitting trigger around the first corner
         {
