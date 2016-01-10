@@ -38,6 +38,13 @@ public class Player8 : MonoBehaviour {
     Staticer staticer;
     public AudioClip ItemSound;
 
+    public TextMesh ItemCount;
+    [Range(0, 5)]
+    public float ItemCountTime = 2;
+    float itemCountTime;
+
+    public GameObject Instructions;
+
     void Start() {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
@@ -99,6 +106,25 @@ public class Player8 : MonoBehaviour {
             }
             staticer.Amount = DistanceToStatic.Evaluate(nearestDistance);
         }
+        // item count text
+        {
+            var itemsLeft = 0;
+            for (int i = 0; i < items.Length; i++) {
+                if (items[i]) {
+                    itemsLeft++;
+                }
+            }
+            ItemCount.text = (items.Length - itemsLeft) + " / " + items.Length;
+        }
+        // item count display
+        {
+            if (itemCountTime > 0) {
+                itemCountTime -= Time.deltaTime;
+                ItemCount.gameObject.SetActive(staticer.OnFrames == 0);
+            } else {
+                ItemCount.gameObject.SetActive(false);
+            }
+        }
     }
 
     void OnTriggerEnter(Collider other) {
@@ -106,7 +132,12 @@ public class Player8 : MonoBehaviour {
         if (item) {
             Destroy(item.gameObject);
             staticer.OnFrames = 20;
+            itemCountTime = ItemCountTime;
             AudioSource.PlayClipAtPoint(ItemSound, camera.transform.position);
+        }
+        // turn off instructions when hitting trigger around the first corner
+        {
+            Instructions.SetActive(false);
         }
     }
 }
