@@ -25,10 +25,19 @@ public class Player8 : MonoBehaviour {
     public float CameraMoveScale;
     float animationPosition;
 
+    public float RotationSoundTrigger = 0.05f;
+    bool soundTriggered;
+    public AudioClip StepSound;
+
     Shaker shaker;
     [Range(0, 0.2f)]
     public float MaxShake = 0.04f;
-    
+
+    public AnimationCurve DistanceToStatic;
+    ScaryItem[] items;
+    Staticer staticer;
+    public AudioClip ItemSound;
+
     void Start() {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
@@ -36,8 +45,11 @@ public class Player8 : MonoBehaviour {
         camera = GetComponentInChildren<Camera>();
         light = GetComponentInChildren<Light>();
         shaker = GetComponentInChildren<Shaker>();
+
+        items = FindObjectsOfType<ScaryItem>();
+        staticer = FindObjectOfType<Staticer>();
     }
-    
+
     void Update() {
         // light rotation leading player rotation
         {
@@ -64,6 +76,37 @@ public class Player8 : MonoBehaviour {
                 camera.transform.localRotation = Quaternion.identity;
                 camera.transform.localPosition = camera.transform.localPosition.withX(0);
             }
+        }
+        // trigger sound based on animation
+        {
+            var angle = Mathf.Min(Mathf.Abs(camera.transform.transform.localRotation.eulerAngles.z), Mathf.Abs(camera.transform.transform.localRotation.eulerAngles.z - 360));
+            if (!soundTriggered && angle >= RotationSoundTrigger) {
+                soundTriggered = true;
+                AudioSource.PlayClipAtPoint(StepSound, camera.transform.position.withY(0));
+            } else if (angle < RotationSoundTrigger) {
+                soundTriggered = false;
+            }
+        }
+        // static based on distance to item
+        {
+            ScaryItem nearestItem = null;
+            var nearestDistance = float.PositiveInfinity;
+            for (int i = 0; i < items.Length; i++) {
+                if (items[i] && (items[i].transform.position - transform.position).magnitude < nearestDistance) {
+                    nearestItem = items[i];
+                    nearestDistance = (items[i].transform.position - transform.position).magnitude;
+                }
+            }
+            staticer.Amount = DistanceToStatic.Evaluate(nearestDistance);
+        }
+    }
+
+    void OnTriggerEnter(Collider other) {
+        var item = other.GetComponent<ScaryItem>();
+        if (item) {
+            Destroy(item.gameObject);
+            staticer.OnFrames = 20;
+            AudioSource.PlayClipAtPoint(ItemSound, camera.transform.position);
         }
     }
 }
