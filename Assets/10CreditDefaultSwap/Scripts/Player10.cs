@@ -20,6 +20,8 @@ public class Player10 : MonoBehaviour {
     Colorizer10 colorizer;
     Spawner10[] spawners;
 
+    public AudioClip LoseSound;
+
     void Start() {
         rigidbody = GetComponent<Rigidbody2D>();
         colorizer = Colorizer10.instance;
@@ -65,5 +67,6 @@ public class Player10 : MonoBehaviour {
         ScoreText.text = "You survived\n" + TimeAlive.ToString("0.00") + " seconds";
         rigidbody.velocity = Vector2.zero;
         enabled = false; // no more control for player
+        AudioSource.PlayClipAtPoint(LoseSound, Vector3.zero);
     }
 }
