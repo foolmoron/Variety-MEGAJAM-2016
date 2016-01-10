@@ -50,8 +50,6 @@ public class Player8 : MonoBehaviour {
     public float GameOverTime = 2;
 
     void Start() {
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
         controller = GetComponent<CharacterController>();
         audio = GetComponent<AudioSource>();
         camera = GetComponentInChildren<Camera>();
@@ -65,12 +63,12 @@ public class Player8 : MonoBehaviour {
     void Update() {
         // light rotation leading player rotation
         {
-            targetLightRotation = Input.GetAxis("Mouse X") * LightLeadingMultiplier;
+            targetLightRotation = Input.GetAxis("Horizontal") * LightLeadingMultiplier;
             light.transform.localRotation = Quaternion.Euler(light.transform.localRotation.eulerAngles.x, Mathf.LerpAngle(light.transform.localRotation.eulerAngles.y, targetLightRotation, LightRotationSpeed), light.transform.localRotation.eulerAngles.z);
         }
         // player rotation
         {
-            controller.transform.Rotate(0, HorizontalRotateSpeed * Input.GetAxis("Mouse X"), 0);
+            controller.transform.Rotate(0, HorizontalRotateSpeed * Input.GetAxis("Horizontal"), 0);
         }
         // player movement
         var movement = 0f;
