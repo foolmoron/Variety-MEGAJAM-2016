@@ -20,8 +20,14 @@ public class TheBox : MonoBehaviour {
 
     [Range(0, 5)]
     public float AnimationInterval = 3f;
+    float originalAnimationInterval;
+    [Range(-0.1f, 0)]
+    public float AnimationIntervalVelocity = -0.025f;
     [Range(0, 5)]
     public float Speed = 1f;
+    float originalSpeed;
+    [Range(0, 0.1f)]
+    public float SpeedVelocity = 0.025f; // best variable name ever??
 
     new BoxCollider2D collider;
     SpriteRenderer sprite;
@@ -29,6 +35,9 @@ public class TheBox : MonoBehaviour {
     void Start() {
         collider = GetComponent<BoxCollider2D>();
         sprite = GetComponent<SpriteRenderer>();
+
+        originalAnimationInterval = AnimationInterval;
+        originalSpeed = Speed;
     }
     
     void Update() {
@@ -83,13 +92,17 @@ public class TheBox : MonoBehaviour {
             RestartText.SetActive(IsGameOver && pauseTime <= 0);
             sprite.enabled = pauseTime <= 0;
         }
+        // velocities
+        {
+            AnimationInterval = originalAnimationInterval + (AnimationIntervalVelocity * TimeAlive);
+            Speed = originalSpeed + (SpeedVelocity * TimeAlive);
+        }
     }
 
     IEnumerator RandomSizings() {
         while (true) {
             yield return new WaitForSeconds(AnimationInterval / 2); // wait between animations
             var randomDirection = Random.insideUnitCircle.normalized;
-            Debug.Log(randomDirection);
             var newLocation = new Vector3(Mathf.Lerp(-3, 3, (randomDirection.x / 2 + 0.5f)), Mathf.Lerp(-2, 1.75f, (randomDirection.y / 2 + 0.5f)), 0);
             var duration = (newLocation - transform.position).magnitude / Speed;
             Tween.MoveTo(gameObject, newLocation, duration, Interpolate.EaseType.Linear);
