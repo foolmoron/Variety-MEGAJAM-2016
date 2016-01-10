@@ -18,6 +18,11 @@ public class TheBox : MonoBehaviour {
     public float PauseAfterLose = 2f;
     float pauseTime;
 
+    [Range(0, 5)]
+    public float AnimationInterval = 3f;
+    [Range(0, 5)]
+    public float Speed = 1f;
+
     new BoxCollider2D collider;
     SpriteRenderer sprite;
 
@@ -40,9 +45,11 @@ public class TheBox : MonoBehaviour {
                 IsGameOver = true;
                 IsStarted = false;
                 pauseTime = PauseAfterLose;
+                Tween.Stop(gameObject);
                 transform.position = Vector3.zero;
-                transform.localScale = Vector3.one * 0.5f;
+                transform.localScale = Vector3.one;
                 StopAllCoroutines();
+                
             }
         }
         // check for game start or restart
@@ -80,8 +87,13 @@ public class TheBox : MonoBehaviour {
 
     IEnumerator RandomSizings() {
         while (true) {
-            Debug.Log("x");
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(AnimationInterval / 2); // wait between animations
+            var randomDirection = Random.insideUnitCircle.normalized;
+            Debug.Log(randomDirection);
+            var newLocation = new Vector3(Mathf.Lerp(-3, 3, (randomDirection.x / 2 + 0.5f)), Mathf.Lerp(-2, 1.75f, (randomDirection.y / 2 + 0.5f)), 0);
+            var duration = (newLocation - transform.position).magnitude / Speed;
+            Tween.MoveTo(gameObject, newLocation, duration, Interpolate.EaseType.Linear);
+            yield return new WaitForSeconds(duration);
         }
     }
 }
