@@ -10,13 +10,20 @@ public class TheBox : MonoBehaviour {
     public GameObject StayText;
     public GameObject LoseText;
     public TextMesh ScoreText;
+    public GameObject RestartText;
 
     public float TimeAlive;
 
+    [Range(0, 5)]
+    public float PauseAfterLose = 2f;
+    float pauseTime;
+
     new BoxCollider2D collider;
+    SpriteRenderer sprite;
 
     void Start() {
         collider = GetComponent<BoxCollider2D>();
+        sprite = GetComponent<SpriteRenderer>();
     }
     
     void Update() {
@@ -27,16 +34,28 @@ public class TheBox : MonoBehaviour {
                 inBox = true;
             }
         }
-        // check for game start
+        // check for loss
         {
-            if (!IsStarted && inBox) {
-                IsStarted = true;
+            if (!IsGameOver && IsStarted && !inBox) {
+                IsGameOver = true;
+                IsStarted = false;
+                pauseTime = PauseAfterLose;
+                transform.position = Vector3.zero;
+                transform.localScale = Vector3.one * 0.5f;
             }
         }
-        // check if lost
+        // check for restart
         {
-            if (IsStarted && !inBox) {
-                IsGameOver = true;
+            if (!IsStarted && IsGameOver && pauseTime <= 0 && inBox) {
+                IsStarted = true;
+                IsGameOver = false;
+                TimeAlive = 0;
+            }
+        }
+        // check for game start
+        {
+            if (!IsStarted && !IsGameOver && inBox) {
+                IsStarted = true;
             }
         }
         // add time if started 
@@ -45,13 +64,21 @@ public class TheBox : MonoBehaviour {
                 TimeAlive += Time.deltaTime;
             }
         }
-        // toggle texts
+        // pause after lose
+        {
+            if (pauseTime > 0) {
+                pauseTime -= Time.deltaTime;
+            }
+        }
+        // toggle stuff
         {
             GetInText.SetActive(!IsGameOver && !IsStarted);
             StayText.SetActive(!IsGameOver && IsStarted);
             LoseText.SetActive(IsGameOver);
             ScoreText.gameObject.SetActive(IsGameOver);
-            ScoreText.text = "you were in the there for\n" + TimeAlive.ToString("0.00") + " seconds";
+            ScoreText.text = "you were in there for\n" + TimeAlive.ToString("0.00") + " seconds";
+            RestartText.SetActive(IsGameOver && pauseTime <= 0);
+            sprite.enabled = pauseTime <= 0;
         }
     }
 }
