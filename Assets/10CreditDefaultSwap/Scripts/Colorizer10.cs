@@ -5,7 +5,7 @@ public class Colorizer10 : MonoBehaviour {
 
     public static Colorizer10 instance;
 
-    public HSBColor color;
+    public HSBColor Color;
     public Color RGBColor;
     public Color RGBInverted;
     [Range(0, 5)]
@@ -20,8 +20,8 @@ public class Colorizer10 : MonoBehaviour {
     }
     
     void Update() {
-        color.h  = (color.h + HueVelocity * Time.deltaTime) % 1;
-        RGBColor = color.ToColor();
+        Color.h  = (Color.h + HueVelocity * Time.deltaTime) % 1;
+        RGBColor = Color.ToColor();
         RGBInverted = new Color(1 - RGBColor.r, 1 - RGBColor.g, 1 - RGBColor.b, RGBColor.a);
     }
 }

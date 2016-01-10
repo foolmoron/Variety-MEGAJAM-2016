@@ -68,5 +68,14 @@ public class Player10 : MonoBehaviour {
         rigidbody.velocity = Vector2.zero;
         enabled = false; // no more control for player
         AudioSource.PlayClipAtPoint(LoseSound, Vector3.zero);
+        StartCoroutine(Grayness());
+    }
+
+    IEnumerator Grayness() {
+        while (true) {
+            colorizer.Color.s = Mathf.Lerp(colorizer.Color.s, 0, 0.03f);
+            colorizer.Color.b = Mathf.Lerp(colorizer.Color.b, 0.75f, 0.03f);
+            yield return new WaitForEndOfFrame();
+        }
     }
 }
