@@ -15,6 +15,8 @@ public class GrowWhenKey : MonoBehaviour {
     public AudioClip PressSound;
     public AudioClip ReleaseSound;
 
+    public GameObject GrowInstructions;
+
     void Start() {
     }
     
@@ -25,6 +27,7 @@ public class GrowWhenKey : MonoBehaviour {
         transform.localScale = new Vector3(newSize, newSize);
 
         if (Input.GetKeyDown(Key)) {
+            GrowInstructions.SetActive(false);
             AudioSource.PlayClipAtPoint(PressSound, Vector3.zero);
         } else if (Input.GetKeyUp(Key)) {
             AudioSource.PlayClipAtPoint(ReleaseSound, Vector3.zero);

@@ -22,6 +22,8 @@ public class Player10 : MonoBehaviour {
 
     public AudioClip LoseSound;
 
+    public GameObject MoveInstructions;
+
     void Start() {
         rigidbody = GetComponent<Rigidbody2D>();
         colorizer = Colorizer10.instance;
@@ -32,6 +34,7 @@ public class Player10 : MonoBehaviour {
         var direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         if (direction != Vector2.zero) {
             lastDirection = direction;
+            MoveInstructions.SetActive(false);
         }
         // move in direction
         {
