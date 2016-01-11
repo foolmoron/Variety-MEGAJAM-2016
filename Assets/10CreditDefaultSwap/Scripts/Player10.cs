@@ -38,7 +38,7 @@ public class Player10 : MonoBehaviour {
         }
         // move in direction
         {
-            rigidbody.AddForce(direction * Speed);
+            rigidbody.AddForce(direction * Speed * 120 * Time.deltaTime);
         }
         // rotate to point to last direction
         {
