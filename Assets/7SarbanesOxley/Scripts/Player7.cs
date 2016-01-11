@@ -23,6 +23,8 @@ public class Player7 : MonoBehaviour {
 
     ScoreTracker7 scoreTracker;
 
+    public AudioClip JumpSound;
+
     void Start() {
         rigidbody = GetComponent<Rigidbody2D>();
         scoreTracker = FindObjectOfType<ScoreTracker7>();
@@ -38,6 +40,7 @@ public class Player7 : MonoBehaviour {
             velocity.y += JumpForce;
             rigidbody.angularVelocity = Mathf.Sign(Random.value - 0.5f) * Mathf.Lerp(MinRandomRotation, MaxRandomRotation, Random.value);
             OffOnInput.SetActive(false);
+            AudioSource.PlayClipAtPoint(JumpSound, Vector3.zero);
         }
         if (Input.GetKey(LeftKey)) {
             velocity.x = -Speed;

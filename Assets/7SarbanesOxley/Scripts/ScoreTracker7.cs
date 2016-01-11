@@ -26,6 +26,8 @@ public class ScoreTracker7 : MonoBehaviour {
     public TextMesh OxleyPerc;
     public GameObject Rematch;
 
+    public AudioClip EndSound;
+
     void Start() {
         pieces = FindObjectsOfType<GetColored>();
         originalTime = TimeLeft;
@@ -63,6 +65,9 @@ public class ScoreTracker7 : MonoBehaviour {
                 var colorers = FindObjectsOfType<Colorer>();
                 for (int i = 0; i < colorers.Length; i++) {
                     Destroy(colorers[i]);
+                }
+                if (!GameOver) {
+                    AudioSource.PlayClipAtPoint(EndSound, Vector3.zero);
                 }
                 GameOver = true;
             }
