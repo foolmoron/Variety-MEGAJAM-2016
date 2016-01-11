@@ -44,3 +44,21 @@ Theme: Sarbanes-Oxley
 Genre: Competitive Graffiti  
 Timelapse: https://youtu.be/6azHDs1E3rQ  
 Paint as much of the level as you can before the timer runs out.  
+
+## Game #8  
+Theme: CSO - Chief Security Officer  
+Genre: Horror Maze  
+Timelapse: https://youtu.be/2DjU22ItruQ  
+Investigate the anomalies in the maze.  
+
+## Game #9
+Theme: NTE - Not To Exceed  
+Genre: Mouse Skill  
+Timelapse: https://youtu.be/_n3oPhZQROc  
+Just keep your mouse inside the box!  
+
+## Game #10
+Theme: CDS - Credit Default Swap  
+Genre: Avoider  
+Timelapse: https://youtu.be/eiKD_ZF5aF8​  
+Avoid the obstacles flying at you by swapping dimensions.  
