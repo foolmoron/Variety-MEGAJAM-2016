@@ -23,7 +23,7 @@ public class SliceAnimator : MonoBehaviour {
         slice.color = originalColors[i];
         slice.transform.localScale = new Vector3(0, 0, 1);
         slice.transform.rotation = Quaternion.Euler(0, 0, -45 + 18 * i);
-        slice.fillAmount = 0.05f;
+        slice.fillAmount = 0.051f;
     }
     
     Coroutine topFlash;
@@ -82,9 +82,9 @@ public class SliceAnimator : MonoBehaviour {
         t = 0f;
         while (t < wipeTime) {
             t += Time.deltaTime;
-            Slices[first].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.05f, -0.05f, t, wipeTime);
-            Slices[middle].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseInSine)(0.05f, -0.05f, t, wipeTime);
-            Slices[last].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.05f, -0.05f, t, wipeTime);
+            Slices[first].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.051f, -0.051f, t, wipeTime);
+            Slices[middle].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseInSine)(0.051f, -0.051f, t, wipeTime);
+            Slices[last].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.051f, -0.051f, t, wipeTime);
             Slices[first].transform.rotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * first, 9, t, wipeTime));
             Slices[middle].transform.rotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseInSine)(-45 + 18 * middle, 9, t, wipeTime));
             Slices[last].transform.rotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * last, 9, t, wipeTime));
@@ -133,7 +133,7 @@ public class SliceAnimator : MonoBehaviour {
             } else if (overallTime >= (sprayMaxTime + rotateTime) && overallTime < (sprayMaxTime + rotateTime + wipeMaxTime)) {
                 var t = overallTime - (sprayMaxTime + rotateTime);
                 for (int i = 0; i < Slices.Length; i++) {
-                    Slices[i].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.05f, -0.05f, t, wipeTimes[i]);
+                    Slices[i].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.051f, -0.051f, t, wipeTimes[i]);
                     Slices[i].transform.rotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * i, 9, t, wipeTimes[i]));
                 }
             }
