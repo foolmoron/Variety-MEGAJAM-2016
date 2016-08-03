@@ -8,21 +8,46 @@ public class SliceAnimator : MonoBehaviour {
     public Image[] Slices;
     Color[] originalColors;
 
+    public bool Play;
+    bool prevPlay;
+    [SplitRange(0, 1.5f, 10)]
+    public float TimeScale = 1;
+    [Range(0, 1)]
+    public float ScaleShake = 0;
+
+    public GameObject Container { get; private set; }
+
+    void Awake() {
+        Container = transform.FindChild("Container").gameObject;
+    }
+
     void Start() {
         originalColors = new Color[Slices.Length];
         for (int i = 0; i < Slices.Length; i++) {
             originalColors[i] = Slices[i].color;
-        }
-        for (int i = 0; i < Slices.Length; i++) {
             ResetSlice(i);
         }
+    }
+
+    public void Update() {
+        if (Play && !prevPlay) {
+            for (int i = 0; i < Slices.Length; i++) {
+                ResetSlice(i);
+            }
+            victory = StartCoroutine(RadialColors(0.5f, float.PositiveInfinity, 0.4f, false, 1f));
+        } else if (!Play && prevPlay) {
+            if (victory != null) {
+                StopCoroutine(victory);
+            }
+        }
+        prevPlay = Play;
     }
 
     public void ResetSlice(int i) {
         var slice = Slices[i];
         slice.color = originalColors[i];
         slice.transform.localScale = new Vector3(0, 0, 1);
-        slice.transform.rotation = Quaternion.Euler(0, 0, -45 + 18 * i);
+        slice.transform.localRotation = Quaternion.Euler(0, 0, -45 + 18 * i);
         slice.fillAmount = 0.051f;
     }
     
@@ -85,9 +110,9 @@ public class SliceAnimator : MonoBehaviour {
             Slices[first].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.051f, -0.051f, t, wipeTime);
             Slices[middle].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseInSine)(0.051f, -0.051f, t, wipeTime);
             Slices[last].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.051f, -0.051f, t, wipeTime);
-            Slices[first].transform.rotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * first, 9, t, wipeTime));
-            Slices[middle].transform.rotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseInSine)(-45 + 18 * middle, 9, t, wipeTime));
-            Slices[last].transform.rotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * last, 9, t, wipeTime));
+            Slices[first].transform.localRotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * first, 9, t, wipeTime));
+            Slices[middle].transform.localRotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseInSine)(-45 + 18 * middle, 9, t, wipeTime));
+            Slices[last].transform.localRotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * last, 9, t, wipeTime));
             yield return new WaitForEndOfFrame();
         }
     }
@@ -111,36 +136,32 @@ public class SliceAnimator : MonoBehaviour {
     }
 
     IEnumerator RadialColors(float sprayMaxTime, float rotateTime, float wipeMaxTime, bool red, float hueSpeed) {
-        var sprayTimes = new float[Slices.Length];
-        for (int i = 0; i < sprayTimes.Length; i++) {
-            sprayTimes[i] = Mathf.Lerp(sprayMaxTime / 4, sprayMaxTime, Random.value);
-        }
-        var wipeTimes = new float[Slices.Length];
-        for (int i = 0; i < wipeTimes.Length; i++) {
-            wipeTimes[i] = Mathf.Lerp(wipeMaxTime / 4, wipeMaxTime, Random.value);
+        var sprayScales = new float[Slices.Length];
+        var prevSprayScales = new float[Slices.Length];
+        for (int i = 0; i < sprayScales.Length; i++) {
+            prevSprayScales[i] = 0;
+            sprayScales[i] = 1;
         }
 
-        var overallTime = 0f;
-        while (overallTime < (sprayMaxTime + rotateTime + wipeMaxTime)) {
-            overallTime += Time.deltaTime;
-            if (overallTime > 0 && overallTime < sprayMaxTime) {
-                var t = overallTime - 0;
-                for (int i = 0; i < Slices.Length; i++) {
-                    Slices[i].transform.localScale = new Vector3(Interpolate.Ease(Interpolate.EaseType.Linear)(0, 1, t, sprayTimes[i]), Interpolate.Ease(Interpolate.EaseType.Linear)(0, 1, t, sprayTimes[i]));
-                }
-            } else if (overallTime >= sprayMaxTime && overallTime < (sprayMaxTime + rotateTime)) {
-                var t = overallTime - sprayMaxTime;
-            } else if (overallTime >= (sprayMaxTime + rotateTime) && overallTime < (sprayMaxTime + rotateTime + wipeMaxTime)) {
-                var t = overallTime - (sprayMaxTime + rotateTime);
-                for (int i = 0; i < Slices.Length; i++) {
-                    Slices[i].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.051f, -0.051f, t, wipeTimes[i]);
-                    Slices[i].transform.rotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * i, 9, t, wipeTimes[i]));
+        var t = 0f;
+        var ts = 0f;
+        while (t < (sprayMaxTime + rotateTime + wipeMaxTime)) {
+            t += Time.deltaTime * TimeScale;
+            ts += Time.deltaTime * TimeScale;
+            if (ts >= sprayMaxTime) {
+                ts = 0;
+                for (int i = 0; i < sprayScales.Length; i++) {
+                    prevSprayScales[i] = sprayScales[i];
+                    sprayScales[i] = Random.value * ScaleShake + (1 - ScaleShake);
                 }
             }
-
             for (int i = 0; i < Slices.Length; i++) {
                 var slice = Slices[i];
-                var lerp = ((float)i / Slices.Length + (overallTime * hueSpeed)) % 1;
+                
+                var scale = Mathf.Lerp(prevSprayScales[i], sprayScales[i], ts/sprayMaxTime);
+                slice.transform.localScale = new Vector3(scale, scale);
+
+                var lerp = ((float)i / Slices.Length + (t * hueSpeed)) % 1;
                 slice.color = new HSBColor(red ? (0.96f + Mathf.Sin(lerp * 6 * Mathf.PI) * 0.04f) % 1 : lerp, 1, 1, 1).ToColor();
             }
             yield return new WaitForEndOfFrame();
