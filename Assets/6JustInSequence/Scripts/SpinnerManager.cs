@@ -19,6 +19,12 @@ public class SpinnerManager : MonoBehaviour {
 
     SliceAnimator[] SliceAnimators;
 
+    public GameObject CreditsObject;
+    [Range(0, 5)]
+    public float CreditsHoldTime = 2;
+    float creditsHoldTime;
+    public bool Credits;
+
     void Start() {
         SliceAnimators = new SliceAnimator[Spinners];
         for (int i = 0; i < SliceAnimators.Length; i++) {
@@ -50,7 +56,6 @@ public class SpinnerManager : MonoBehaviour {
                         lerp *= 1 + zeroRange;
                     }
                     RotationStep = Mathf.Pow((lerp - 0.5f) * 2, exp) * Mathf.Sign(lerp - 0.5f) * 180;
-                    Debug.Log(screenPos.x / horizontalSliderRegion + " - " + lerp);
                 } else if (screenPos.x <= horizontalSliderRegion && screenPos.y <= 0.5f) { // rot velocity horizontal slider
                     var lerp = screenPos.x / horizontalSliderRegion;
                     if (Mathf.Abs(lerp - 0.5f) <= zeroRange / 2) {
@@ -61,7 +66,6 @@ public class SpinnerManager : MonoBehaviour {
                         lerp *= 1 + zeroRange;
                     }
                     RotationStepVelocity = Mathf.Pow((lerp - 0.5f) * 2, exp) * Mathf.Sign(lerp - 0.5f) * 45;
-                    Debug.Log(screenPos.x / horizontalSliderRegion + " - " + lerp);
                 } else if (screenPos.x >= verticalSliderRegion) { // shake vertical slider
                     var lerp = screenPos.y;
                     if (lerp <= zeroRange) {
@@ -70,7 +74,6 @@ public class SpinnerManager : MonoBehaviour {
                         lerp = (lerp - zeroRange) / (1 - zeroRange);
                     }
                     ScaleShake = Mathf.Pow(lerp, exp);
-                    Debug.Log(lerp);
                 }
             }
         }
@@ -83,6 +86,23 @@ public class SpinnerManager : MonoBehaviour {
                 sliceAnimator.Play = Play;
                 sliceAnimator.ScaleShake = ScaleShake;
             }
+        }
+        // credits
+        {
+            var screenPos = new Vector2(Input.mousePosition.x / Screen.width, Input.mousePosition.y / Screen.height);
+            if (!Credits) {
+                if (Input.GetMouseButton(0) && Mathf.Abs(screenPos.x - 0.5f) <= 0.12f && Mathf.Abs(screenPos.y - 0.5f) <= 0.12f) {
+                    creditsHoldTime += Time.deltaTime;
+                } else {
+                    creditsHoldTime = 0;
+                }
+            } else {
+                if (Input.GetMouseButtonDown(0)) {
+                    creditsHoldTime = 0;
+                }
+            }
+            Credits = creditsHoldTime >= CreditsHoldTime;
+            CreditsObject.SetActive(Credits);
         }
     }
 }
