@@ -6,8 +6,6 @@ public class SliceAnimator : MonoBehaviour {
 
     // requires 20 slices because whatever
     public SliceMesh[] Slices;
-    public Color InitialColor;
-    Color[] originalColors;
 
     public bool Play;
     bool prevPlay;
@@ -17,19 +15,10 @@ public class SliceAnimator : MonoBehaviour {
     public float ScaleShake = 0;
 
     void Awake() {
-        // set colors
-        var hsb = HSBColor.FromColor(InitialColor);
-        for (int i = 0; i < Slices.Length; i++) {
-            var slice = Slices[i];
-            var lerp = (float)i / Slices.Length;
-            slice.Color = new HSBColor((hsb.h + lerp) % 1, hsb.s, hsb.b, hsb.a).ToColor();
-        }
     }
 
     void Start() {
-        originalColors = new Color[Slices.Length];
         for (int i = 0; i < Slices.Length; i++) {
-            originalColors[i] = Slices[i].Color;
             ResetSlice(i);
         }
     }
@@ -50,7 +39,6 @@ public class SliceAnimator : MonoBehaviour {
 
     public void ResetSlice(int i) {
         var slice = Slices[i];
-        slice.Color = originalColors[i];
         slice.transform.localScale = new Vector3(0, 0, 1);
         slice.transform.localRotation = Quaternion.Euler(0, 0, -45 + 18 * i);
     }
@@ -163,7 +151,7 @@ public class SliceAnimator : MonoBehaviour {
                 slice.transform.localScale = new Vector3(scale, scale);
 
                 var lerp = ((float)i / Slices.Length + (t * hueSpeed)) % 1;
-                slice.Color = new HSBColor(red ? (0.96f + Mathf.Sin(lerp * 6 * Mathf.PI) * 0.04f) % 1 : lerp, 1, 1, 1).ToColor();
+                slice.Color = new HSBColor(lerp, 1, 1, 1).ToColor();
             }
             yield return new WaitForEndOfFrame();
         }

@@ -8,7 +8,7 @@ public class SpinnerManager : MonoBehaviour {
     public int Spinners = 10;
     public GameObject SpinnerPrefab;
     public float MaxScale = 1f;
-    [Range(0, 360)]
+    [Range(-180, 180)]
     public float RotationStep;
     [Range(-45, 45)]
     public float RotationStepVelocity;
@@ -32,12 +32,57 @@ public class SpinnerManager : MonoBehaviour {
     }
 
     public void Update() {
-        RotationStep = (RotationStep + RotationStepVelocity * Time.deltaTime) % 360;
-        for (int i = 0; i < SliceAnimators.Length; i++) {
-            var sliceAnimator = SliceAnimators[i];
-            sliceAnimator.transform.localRotation = Quaternion.Euler(0, 0, RotationStep * i);
-            sliceAnimator.Play = Play;
-            sliceAnimator.ScaleShake = ScaleShake;
+        // controls
+        {
+            var horizontalSliderRegion = 0.7f;
+            var verticalSliderRegion = 0.9f;
+            var zeroRange = 0.1f;
+            var exp = 2f;
+            if (Input.GetMouseButton(0)) {
+                var screenPos = new Vector2(Input.mousePosition.x / Screen.width, Input.mousePosition.y / Screen.height);
+                if (screenPos.x <= horizontalSliderRegion && screenPos.y >= 0.5f) { // rot step horizontal slider
+                    var lerp = screenPos.x / horizontalSliderRegion;
+                    if (Mathf.Abs(lerp - 0.5f) <= zeroRange / 2) {
+                        lerp = 0.5f;
+                    } else if (lerp >= 0.5f) {
+                        lerp /= 1 + zeroRange;
+                    } else {
+                        lerp *= 1 + zeroRange;
+                    }
+                    RotationStep = Mathf.Pow((lerp - 0.5f) * 2, exp) * Mathf.Sign(lerp - 0.5f) * 180;
+                    Debug.Log(screenPos.x / horizontalSliderRegion + " - " + lerp);
+                } else if (screenPos.x <= horizontalSliderRegion && screenPos.y <= 0.5f) { // rot velocity horizontal slider
+                    var lerp = screenPos.x / horizontalSliderRegion;
+                    if (Mathf.Abs(lerp - 0.5f) <= zeroRange / 2) {
+                        lerp = 0.5f;
+                    } else if (lerp >= 0.5f) {
+                        lerp /= 1 + zeroRange;
+                    } else {
+                        lerp *= 1 + zeroRange;
+                    }
+                    RotationStepVelocity = Mathf.Pow((lerp - 0.5f) * 2, exp) * Mathf.Sign(lerp - 0.5f) * 45;
+                    Debug.Log(screenPos.x / horizontalSliderRegion + " - " + lerp);
+                } else if (screenPos.x >= verticalSliderRegion) { // shake vertical slider
+                    var lerp = screenPos.y;
+                    if (lerp <= zeroRange) {
+                        lerp = 0f;
+                    } else {
+                        lerp = (lerp - zeroRange) / (1 - zeroRange);
+                    }
+                    ScaleShake = Mathf.Pow(lerp, exp);
+                    Debug.Log(lerp);
+                }
+            }
+        }
+        // set slices
+        {
+            RotationStep = (RotationStep + RotationStepVelocity * Time.deltaTime) % 360;
+            for (int i = 0; i < SliceAnimators.Length; i++) {
+                var sliceAnimator = SliceAnimators[i];
+                sliceAnimator.transform.localRotation = Quaternion.Euler(0, 0, RotationStep * i);
+                sliceAnimator.Play = Play;
+                sliceAnimator.ScaleShake = ScaleShake;
+            }
         }
     }
 }
