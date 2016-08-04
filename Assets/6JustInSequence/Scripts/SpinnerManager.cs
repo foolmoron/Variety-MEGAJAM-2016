@@ -51,7 +51,7 @@ public class SpinnerManager : MonoBehaviour {
                     if (Mathf.Abs(lerp - 0.5f) <= zeroRange / 2) {
                         lerp = 0.5f;
                     } else if (lerp >= 0.5f) {
-                        lerp /= 1 + zeroRange;
+                        lerp /= 1 + zeroRange * (1 - (lerp - 0.5f) * 2);
                     } else {
                         lerp *= 1 + zeroRange;
                     }
@@ -61,7 +61,7 @@ public class SpinnerManager : MonoBehaviour {
                     if (Mathf.Abs(lerp - 0.5f) <= zeroRange / 2) {
                         lerp = 0.5f;
                     } else if (lerp >= 0.5f) {
-                        lerp /= 1 + zeroRange;
+                        lerp /= 1 + zeroRange*(1 - (lerp - 0.5f)*2);
                     } else {
                         lerp *= 1 + zeroRange;
                     }
