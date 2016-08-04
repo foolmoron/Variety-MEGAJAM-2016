@@ -7,6 +7,7 @@ public class SpinnerManager : MonoBehaviour {
     [Range(1, 200)]
     public int Spinners = 10;
     public GameObject SpinnerPrefab;
+    public float MaxScale = 1f;
     [Range(0, 360)]
     public float RotationStep;
     [Range(-45, 45)]
@@ -25,7 +26,7 @@ public class SpinnerManager : MonoBehaviour {
             sliceAnimator.transform.localPosition = sliceAnimator.transform.localPosition.withZ(-i*0.001f);
 
             SliceAnimators[i] = sliceAnimator;
-            sliceAnimator.transform.localScale = new Vector3(1.5f / Spinners * (Spinners - i), 1.5f / Spinners * (Spinners - i), 1);
+            sliceAnimator.transform.localScale = new Vector3(MaxScale / Spinners * (Spinners - i), MaxScale / Spinners * (Spinners - i), 1);
         }
         RotationStep = 360f / Spinners;
     }
