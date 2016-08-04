@@ -22,12 +22,10 @@ public class SpinnerManager : MonoBehaviour {
         SliceAnimators = new SliceAnimator[Spinners];
         for (int i = 0; i < SliceAnimators.Length; i++) {
             var sliceAnimator = Instantiate(SpinnerPrefab).GetComponent<SliceAnimator>();
-            var canvas = sliceAnimator.GetComponent<Canvas>();
-            canvas.worldCamera = Camera.main;
-            canvas.sortingOrder = i;
+            sliceAnimator.transform.localPosition = sliceAnimator.transform.localPosition.withZ(-i*0.001f);
 
             SliceAnimators[i] = sliceAnimator;
-            sliceAnimator.Container.transform.localScale = new Vector3(1.5f / Spinners * (Spinners - i), 1.5f / Spinners * (Spinners - i), 1);
+            sliceAnimator.transform.localScale = new Vector3(1.5f / Spinners * (Spinners - i), 1.5f / Spinners * (Spinners - i), 1);
         }
         RotationStep = 360f / Spinners;
     }
@@ -36,7 +34,7 @@ public class SpinnerManager : MonoBehaviour {
         RotationStep = (RotationStep + RotationStepVelocity * Time.deltaTime) % 360;
         for (int i = 0; i < SliceAnimators.Length; i++) {
             var sliceAnimator = SliceAnimators[i];
-            sliceAnimator.Container.transform.localRotation = Quaternion.Euler(0, 0, RotationStep * i);
+            sliceAnimator.transform.localRotation = Quaternion.Euler(0, 0, RotationStep * i);
             sliceAnimator.Play = Play;
             sliceAnimator.ScaleShake = ScaleShake;
         }

@@ -5,7 +5,8 @@ using UnityEngine.UI;
 public class SliceAnimator : MonoBehaviour {
 
     // requires 20 slices because whatever
-    public Image[] Slices;
+    public SpriteRenderer[] Slices;
+    public Color InitialColor;
     Color[] originalColors;
 
     public bool Play;
@@ -15,10 +16,14 @@ public class SliceAnimator : MonoBehaviour {
     [Range(0, 1)]
     public float ScaleShake = 0;
 
-    public GameObject Container { get; private set; }
-
     void Awake() {
-        Container = transform.FindChild("Container").gameObject;
+        // set colors
+        var hsb = HSBColor.FromColor(InitialColor);
+        for (int i = 0; i < Slices.Length; i++) {
+            var slice = Slices[i];
+            var lerp = (float)i / Slices.Length;
+            slice.color = new HSBColor((hsb.h + lerp) % 1, hsb.s, hsb.b, hsb.a).ToColor();
+        }
     }
 
     void Start() {
@@ -48,7 +53,6 @@ public class SliceAnimator : MonoBehaviour {
         slice.color = originalColors[i];
         slice.transform.localScale = new Vector3(0, 0, 1);
         slice.transform.localRotation = Quaternion.Euler(0, 0, -45 + 18 * i);
-        slice.fillAmount = 0.051f;
     }
     
     Coroutine topFlash;
@@ -107,9 +111,6 @@ public class SliceAnimator : MonoBehaviour {
         t = 0f;
         while (t < wipeTime) {
             t += Time.deltaTime;
-            Slices[first].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.051f, -0.051f, t, wipeTime);
-            Slices[middle].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseInSine)(0.051f, -0.051f, t, wipeTime);
-            Slices[last].fillAmount = Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(0.051f, -0.051f, t, wipeTime);
             Slices[first].transform.localRotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * first, 9, t, wipeTime));
             Slices[middle].transform.localRotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseInSine)(-45 + 18 * middle, 9, t, wipeTime));
             Slices[last].transform.localRotation = Quaternion.Euler(0, 0, Interpolate.Ease(Interpolate.EaseType.EaseOutSine)(-45 + 18 * last, 9, t, wipeTime));
