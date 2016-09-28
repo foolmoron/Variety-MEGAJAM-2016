@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
+using MidiJack;
 using UnityEngine.UI;
 
 public class SpinnerManager : MonoBehaviour {
@@ -12,8 +14,12 @@ public class SpinnerManager : MonoBehaviour {
     public float RotationStep;
     [Range(-45, 45)]
     public float RotationStepVelocity;
+    [Range(-5, 5)]
+    public float HueSpeed;
     [Range(0, 1)]
     public float ScaleShake;
+
+    public static bool USE_MIDI = true;
 
     public bool Play;
 
@@ -77,6 +83,24 @@ public class SpinnerManager : MonoBehaviour {
                 }
             }
         }
+        // midi
+        {
+            if (MidiMaster.GetKnob(0x2D) > 0) {
+                USE_MIDI = true;
+            } else if (MidiMaster.GetKnob(0x2E) > 0) {
+                USE_MIDI = false;
+            }
+            if (USE_MIDI) {
+                RotationStepVelocity = -(Mathf.Sqrt(MidiMaster.GetKnob(0x0E)) * 2 - 1) * 90;
+                if (MidiMaster.GetKnob(0x18) > 0f) {
+                    RotationStep = -(MidiMaster.GetKnob(0x0F) * 2 - 1) * MidiMaster.GetKnob(0x04) * 180;
+                    RotationStepVelocity = 0;
+                }
+                HueSpeed = -(Mathf.Sqrt(MidiMaster.GetKnob(0x10)) * 2 - 1) * 5;
+            }
+            ScaleShake = MidiMaster.GetKnob(0x05) * MidiMaster.GetKnob(0x05);
+            Time.timeScale = (MidiMaster.GetKnob(0x03) * 2) * (MidiMaster.GetKnob(0x03) * 2);
+        }
         // set slices
         {
             RotationStep = (RotationStep + RotationStepVelocity * Time.deltaTime) % 360;
@@ -84,6 +108,7 @@ public class SpinnerManager : MonoBehaviour {
                 var sliceAnimator = SliceAnimators[i];
                 sliceAnimator.transform.localRotation = Quaternion.Euler(0, 0, RotationStep * i);
                 sliceAnimator.Play = Play;
+                sliceAnimator.HueSpeed = HueSpeed;
                 sliceAnimator.ScaleShake = ScaleShake;
             }
         }

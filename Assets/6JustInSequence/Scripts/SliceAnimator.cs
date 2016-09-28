@@ -6,6 +6,8 @@ public class SliceAnimator : MonoBehaviour {
 
     // requires 20 slices because whatever
     public SliceMesh[] Slices;
+    [Range(-5, 5)]
+    public float HueSpeed = 1;
 
     public bool Play;
     bool prevPlay;
@@ -28,7 +30,7 @@ public class SliceAnimator : MonoBehaviour {
             for (int i = 0; i < Slices.Length; i++) {
                 ResetSlice(i);
             }
-            victory = StartCoroutine(RadialColors(0.5f, float.PositiveInfinity, 0.4f, false, 1f));
+            victory = StartCoroutine(RadialColors(0.5f, float.PositiveInfinity, 0.4f, false));
         } else if (!Play && prevPlay) {
             if (victory != null) {
                 StopCoroutine(victory);
@@ -112,7 +114,7 @@ public class SliceAnimator : MonoBehaviour {
         for (int i = 0; i < Slices.Length; i++) {
             ResetSlice(i);
         }
-        victory = StartCoroutine(RadialColors(0.4f, 1.2f, 0.4f, false, 1f));
+        victory = StartCoroutine(RadialColors(0.4f, 1.2f, 0.4f, false));
     }
 
     Coroutine error;
@@ -121,10 +123,10 @@ public class SliceAnimator : MonoBehaviour {
         for (int i = 0; i < Slices.Length; i++) {
             ResetSlice(i);
         }
-        error = StartCoroutine(RadialColors(0.3f, 0.4f, 1.0f, true, 1f));
+        error = StartCoroutine(RadialColors(0.3f, 0.4f, 1.0f, true));
     }
 
-    IEnumerator RadialColors(float sprayMaxTime, float rotateTime, float wipeMaxTime, bool red, float hueSpeed) {
+    IEnumerator RadialColors(float sprayMaxTime, float rotateTime, float wipeMaxTime, bool red) {
         var sprayScales = new float[Slices.Length];
         var prevSprayScales = new float[Slices.Length];
         for (int i = 0; i < sprayScales.Length; i++) {
@@ -134,6 +136,9 @@ public class SliceAnimator : MonoBehaviour {
 
         var t = 0f;
         var ts = 0f;
+        for (int i = 0; i < Slices.Length; i++) {
+            Slices[i].Color = new HSBColor((float) i / Slices.Length, 1, 1, 1).ToColor();
+        }
         while (t < (sprayMaxTime + rotateTime + wipeMaxTime)) {
             t += Time.deltaTime * TimeScale;
             ts += Time.deltaTime * TimeScale;
@@ -150,8 +155,8 @@ public class SliceAnimator : MonoBehaviour {
                 var scale = Mathf.Lerp(prevSprayScales[i], sprayScales[i], ts/sprayMaxTime);
                 slice.transform.localScale = new Vector3(scale, scale);
 
-                var lerp = ((float)i / Slices.Length + (t * hueSpeed)) % 1;
-                slice.Color = new HSBColor(lerp, 1, 1, 1).ToColor();
+                var newHue = (HSBColor.FromColor(slice.Color).h + Time.deltaTime * HueSpeed + 1) % 1;
+                slice.Color = new HSBColor(newHue, 1, 1, 1).ToColor();
             }
             yield return new WaitForEndOfFrame();
         }
