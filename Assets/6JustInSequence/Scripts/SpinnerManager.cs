@@ -31,7 +31,10 @@ public class SpinnerManager : MonoBehaviour {
     float creditsHoldTime;
     public bool Credits;
 
+    FullscreenEffect effect;
+
     void Start() {
+        effect = FindObjectOfType<FullscreenEffect>();
         SliceAnimators = new SliceAnimator[Spinners];
         for (int i = 0; i < SliceAnimators.Length; i++) {
             var sliceAnimator = Instantiate(SpinnerPrefab).GetComponent<SliceAnimator>();
@@ -97,6 +100,7 @@ public class SpinnerManager : MonoBehaviour {
                     RotationStepVelocity = 0;
                 }
                 HueSpeed = -(Mathf.Sqrt(MidiMaster.GetKnob(0x10)) * 2 - 1) * 5;
+                effect.Effect.SetFloat("_Saturation", MidiMaster.GetKnob(0x06));
             }
             ScaleShake = MidiMaster.GetKnob(0x05) * MidiMaster.GetKnob(0x05);
             Time.timeScale = (MidiMaster.GetKnob(0x03) * 2) * (MidiMaster.GetKnob(0x03) * 2);
