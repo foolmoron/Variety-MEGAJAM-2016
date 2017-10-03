@@ -41,8 +41,8 @@ public class QuestionDropper : MonoBehaviour {
     void Start() {
         bar = GetComponentInChildren<SpriteRenderer>();
         moneyText = GetComponentInChildren<TextMesh>();
-        gameOver = transform.FindChild("GameOver").gameObject;
-        scoreText = gameOver.transform.FindChild("ScoreText").GetComponent<TextMesh>();
+        gameOver = transform.Find("GameOver").gameObject;
+        scoreText = gameOver.transform.Find("ScoreText").GetComponent<TextMesh>();
         // get random dropping area from the box collider's bounds
         {
             var boxCollider = GetComponent<BoxCollider2D>();

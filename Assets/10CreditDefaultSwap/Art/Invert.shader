@@ -1,4 +1,6 @@
-﻿Shader "Custom/Invert"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/Invert"
 {
     SubShader
     {
@@ -31,7 +33,7 @@
             fragmentInput vert(vertexInput i)
             {
                 fragmentInput o;
-                o.pos = mul(UNITY_MATRIX_MVP, i.vertex);
+                o.pos = UnityObjectToClipPos(i.vertex);
                 return o;
             }
 

@@ -36,15 +36,15 @@ public class GameOver : MonoBehaviour {
     public AudioClip GameOverSound;
 
     void Start() {
-        stuff = transform.FindChild("Stuff").gameObject;
+        stuff = transform.Find("Stuff").gameObject;
         shaker = GetComponentInChildren<Shaker>();
-        peaceText = transform.FindChild("Stuff/PeaceText").gameObject;
-        executionText = transform.FindChild("Stuff/ExecutionText").gameObject;
-        resetText = transform.FindChild("Stuff/ResetText").GetComponent<TextMesh>();
-        bloodiedText = transform.FindChild("Stuff/BText").GetComponent<TextMesh>();
-        veryBloodiedText = transform.FindChild("Stuff/VBText").GetComponent<TextMesh>();
-        cleanText = transform.FindChild("Stuff/CText").GetComponent<TextMesh>();
-        timeText = transform.FindChild("Stuff/TText").GetComponent<TextMesh>();
+        peaceText = transform.Find("Stuff/PeaceText").gameObject;
+        executionText = transform.Find("Stuff/ExecutionText").gameObject;
+        resetText = transform.Find("Stuff/ResetText").GetComponent<TextMesh>();
+        bloodiedText = transform.Find("Stuff/BText").GetComponent<TextMesh>();
+        veryBloodiedText = transform.Find("Stuff/VBText").GetComponent<TextMesh>();
+        cleanText = transform.Find("Stuff/CText").GetComponent<TextMesh>();
+        timeText = transform.Find("Stuff/TText").GetComponent<TextMesh>();
     }
 
     public void DoGameOver() {

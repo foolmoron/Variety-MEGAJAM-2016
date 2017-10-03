@@ -42,10 +42,10 @@ public class TypingBox : MonoBehaviour {
             moneyInput.text = "";
         };
 
-        moneyInput = transform.FindChild("Input").GetComponent<TextMesh>();
+        moneyInput = transform.Find("Input").GetComponent<TextMesh>();
         moneyInput.text = "";
 
-        underscore = transform.FindChild("_").GetComponent<TextMesh>();
+        underscore = transform.Find("_").GetComponent<TextMesh>();
         underscoreInitialX = underscore.transform.position.x;
     }
 

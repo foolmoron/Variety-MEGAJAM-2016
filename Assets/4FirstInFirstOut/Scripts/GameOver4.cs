@@ -13,7 +13,7 @@ public class GameOver4 : MonoBehaviour {
     GameObject stuff;
 
     void Start() {
-        stuff = transform.FindChild("Stuff").gameObject;
+        stuff = transform.Find("Stuff").gameObject;
     }
 
     public void DoGameOver() {

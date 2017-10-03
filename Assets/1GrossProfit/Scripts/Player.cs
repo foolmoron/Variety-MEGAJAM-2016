@@ -34,7 +34,7 @@ public class Player : MonoBehaviour {
     public AudioClip GoldSound;
 
     void Start() {
-        mainSprite = transform.FindChild("Sprite").GetComponent<SpriteRenderer>();
+        mainSprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         water = FindObjectOfType<Water>();
     }
 

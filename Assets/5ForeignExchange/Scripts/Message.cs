@@ -10,8 +10,8 @@ public class Message : MonoBehaviour {
     TextMesh messageText;
 
     void Start() {
-        nameText = transform.FindChild("Name").GetComponent<TextMesh>();
-        messageText = transform.FindChild("Message").GetComponent<TextMesh>();
+        nameText = transform.Find("Name").GetComponent<TextMesh>();
+        messageText = transform.Find("Message").GetComponent<TextMesh>();
         nameText.text = Name;
         messageText.text = Text;
     }

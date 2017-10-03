@@ -18,7 +18,7 @@ public class ChatInput : MonoBehaviour {
     void Start() {
         messageBox = FindObjectOfType<MessageBox>();
         them = FindObjectOfType<Them>();
-        input = transform.FindChild("Input").GetComponent<TextMesh>();
+        input = transform.Find("Input").GetComponent<TextMesh>();
         input.text = "";
     }
 
