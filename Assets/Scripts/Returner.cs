@@ -21,7 +21,7 @@ public class Returner : MonoBehaviour {
         // keep alive always
         DontDestroyOnLoad(gameObject);
         // init stuff
-        stuff = transform.FindChild("Stuff").gameObject;
+        stuff = transform.Find("Stuff").gameObject;
         shaker = GetComponentInChildren<Shaker>();
         initialShake = shaker.Strength;
         stuff.SetActive(false);

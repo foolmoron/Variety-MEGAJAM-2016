@@ -1,7 +1,10 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Extra/Saturation"
 {
   Properties
   {
+	_StencilMask("Stencil Mask", Int) = 0
     _MainTex("Texture", 2D) = "white" {}
 	_Saturation("Saturation", Range(0, 1)) = 0
   }
@@ -10,6 +13,12 @@ Shader "Extra/Saturation"
 	Blend One Zero
     // No culling or depth
     Cull Off ZWrite Off ZTest Always
+	Stencil {
+		Ref[_StencilMask]
+		Comp notequal
+		Pass keep
+		Fail keep
+	}
 
     Pass
     {
@@ -34,7 +43,7 @@ Shader "Extra/Saturation"
       v2f vert (appdata v)
       {
         v2f o;
-        o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+        o.vertex = UnityObjectToClipPos(v.vertex);
         o.uv = v.uv;
         return o;
       }

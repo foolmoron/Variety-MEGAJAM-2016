@@ -38,8 +38,8 @@ public class TurnTracker : MonoBehaviour {
     void Start() {
         simonTracker = FindObjectOfType<SimonTracker>();
         sliceAnimator = FindObjectOfType<SliceAnimator>();
-        listenText = transform.FindChild("ListenText").GetComponent<TextMesh>();
-        repeatText = transform.FindChild("RepeatText").GetComponent<TextMesh>();
+        listenText = transform.Find("ListenText").GetComponent<TextMesh>();
+        repeatText = transform.Find("RepeatText").GetComponent<TextMesh>();
     }
 
     public void IncreaseLevel() {

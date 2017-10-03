@@ -19,7 +19,7 @@ public class SpinnerManager : MonoBehaviour {
     [Range(0, 1)]
     public float ScaleShake;
 
-    public static bool USE_MIDI = true;
+    public static bool USE_MIDI = false;
 
     public bool Play;
 
@@ -101,9 +101,9 @@ public class SpinnerManager : MonoBehaviour {
                 }
                 HueSpeed = -(Mathf.Sqrt(MidiMaster.GetKnob(0x10)) * 2 - 1) * 5;
                 effect.Effect.SetFloat("_Saturation", MidiMaster.GetKnob(0x06));
+                ScaleShake = MidiMaster.GetKnob(0x05) * MidiMaster.GetKnob(0x05);
+                Time.timeScale = (MidiMaster.GetKnob(0x03) * 2) * (MidiMaster.GetKnob(0x03) * 2);
             }
-            ScaleShake = MidiMaster.GetKnob(0x05) * MidiMaster.GetKnob(0x05);
-            Time.timeScale = (MidiMaster.GetKnob(0x03) * 2) * (MidiMaster.GetKnob(0x03) * 2);
         }
         // set slices
         {
