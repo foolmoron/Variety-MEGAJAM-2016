@@ -20,7 +20,7 @@ public class GrowWhenKey : MonoBehaviour {
     void Start() {
     }
     
-    void Update() {
+    void FixedUpdate() {
         var targetSize = Input.GetKey(Key) ? MaxSize : MinSize;
         var currentSize = transform.localScale.x;
         var newSize = Mathf.Lerp(currentSize, targetSize, SizeSpeed);
